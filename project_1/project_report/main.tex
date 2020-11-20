@@ -98,8 +98,8 @@ Sui dati, non \`e stata effettuata alcuna operazione precedente la loro
 importazione in R. Il file originale, in formato \texttt{.xlsx}, \`e stato
 per\`o convertito in \texttt{.csv} per facilitare l'importazione.\\
 Prima di iniziare l'analisi, ho rimosso le colonne che ritengo che non
-influenzano le prestazioni di un Supercomputer ("Rank", "Name", "Computer",
-"Site", "Manufacturer", "Country", "Year" ecc\dots), mentre come fattore di
+influenzano le prestazioni di un Supercomputer ("Name", "Manufacturer",
+"Country", "Year" ecc\dots), mentre come fattore di
 uscita per la predizione utilizzer\`o il valore della colonna "Rmax".\\
 Nelle colonne rimanenti, ci sono $351$ valori mancanti in
 "Accelerator/Co-Processor Cores", $426$ in "HPCG [TFlop/s]" e $310$ in
@@ -137,8 +137,6 @@ valori:
 \end{itemize}
 
 \section{Analisi}
-Nell'analisi ho valutato un modello di regressione lineare e un modello di
-regressione esponenziale.
 \subsection{Modello di Regressione Lineare}
 Come primo passo, ho costruito $4$ differenti modelli di regressione lineare
 valutando di volta in volta il valore di $\boldsymbol{R^2}$,
@@ -180,12 +178,17 @@ dei p-value quasi nulli (sia per quanto riguarda i singoli coefficienti che
 quello globale), possiamo concludere che il modello di regressione che abbiamo
 ottenuto cattura buona parte del problema ed \`e statisticamente significativo.
 \subsubsection{Analisi dei Residui}
-Soddisfatto del modello ho proceduto con l'analisi dei residui. Purtroppo la
-loro distribuzione, come possiamo vedere chiaramente, \`e ben lontana
-dall'essere Gaussiana:
+Soddisfatto del modello ho proceduto con l'analisi dei residui. Dal diagramma di
+dispersione, dall'istogramma, dal QQ\_plot e dai risultati ottenuti dal 
+Test di Shapiro-Wilk \`e evidente che la distribuzione dei residui \`e ben
+lontana dall'essere la Gaussiana che cerchiamo:
 \clearpage
-\hspace{-2cm}
-\includegraphics[scale=0.7]{imgs/residuals.pdf}
+\begin{figure}[H]
+	\vspace{-1cm}
+	\hspace{-1.5cm}
+	\includegraphics[scale=0.7]{imgs/residuals.pdf}
+\end{figure}
+\vspace{-0.8cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
 > shapiro.test(lm.resid)
 
@@ -194,25 +197,80 @@ dall'essere Gaussiana:
 data:  lm.resid
 W = 0.28981, p-value < 2.2e-16
 \end{lstlisting}
-La mia prima ipotesi, dato che la distribuzione \`e ben centrata in zero e
+\vspace{0.2cm}
+Per approfondire, ho analizzato, la correlazione tra i predittori utilizzati, se
+eventualmente i residui del modello fossero correlati con uno dei predittori, un
+modello di regressione con tutti i predittori disponibili e un modello di
+regressione lineare semplice. I risultati per\`o non sono stati comunque
+soddisfacenti:
+\vspace{0.2cm}
+\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> cor(data$Rpeak, data$TotalCores)
+[1] 0.7525282
+
+> cor(data$Rpeak, lm.resid)
+[1] 1.965037e-15
+
+> cor(data$TotalCores, lm.resid)
+[1] 8.458876e-16
+
+> # approfondimento analisi dei residui: valutazione modello di regressione
+> # lineare con tutti i fattori
+> lm.1.resid = residuals(lm.1)
+> shapiro.test(lm.1.resid)
+
+	Shapiro-Wilk normality test
+
+data:  lm.1.resid
+W = 0.31715, p-value < 2.2e-16
+
+> # approfondimento analisi dei residui: valutazione modello di regressione
+> # lineare semplice
+> lm.4.resid = residuals(lm.4)
+> shapiro.test(lm.4.resid)
+
+	Shapiro-Wilk normality test
+
+data:  lm.4.resid
+W = 0.27671, p-value < 2.2e-16
+\end{lstlisting}
+\vspace{0.2cm}
+La mia ipotesi allora, dato che la distribuzione \`e comunque centrata in zero e
 ricorda l'andamento di una Gaussiana, \`e stata che fosse a causa della presenza
 di alcuni valori numerici eccessivamente elevati rispetto alla media. Dopo aver
 rimosso questo primo sotto insieme di residui, ho notato che probabilmente fosse
 necessario rimuovere una parte dei residui che causavano una forte deviazione
 da una distribuzione Gaussiana. Cos\`i facendo ho ottenuto un modello certamente
-migliore ma comunque non accettabile:
-\hspace{-2cm}
-\includegraphics[scale=0.7]{imgs/residuals_2.pdf}
+migliore ma comunque non perfetto:
+\clearpage
+\begin{figure}[H]
+	\vspace{-1cm}
+	\begin{center}
+		\hspace*{-1.5cm}
+		\includegraphics[scale=0.7]{imgs/residuals_boxplots.pdf}\\
+		\vspace{-1.5cm}
+		\hspace*{-1.5cm}
+		\includegraphics[scale=0.7]{imgs/residuals_2.pdf}
+	\end{center}
+\end{figure}
+\vspace{-1cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
 > shapiro.test(lm.resid)
 
 	Shapiro-Wilk normality test
 
 data:  lm.resid
-W = 0.28981, p-value < 2.2e-16end{lstlisting}
+W = 0.97162, p-value = 8.588e-06
 \end{lstlisting}
+Da notare comunque la diminuzione di del valore del p-value di $10$ ordini di
+grandezza.
 
 \subsection{Modello di Regressione Esponenziale}
+Non contento, nella speranza di riuscire ad ottenere un modello di regressione
+con un valore di $\boldsymbol{R^2}$ leggermente minore, ma con una distribuzione
+dei residui migliore, ho provato una analisi tramite modello di regressione
+esponenziale.
+
 \subsubsection{Analisi dei Residui}
 
 \section{Conclusioni}

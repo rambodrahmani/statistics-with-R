@@ -125,12 +125,26 @@ cor(data$Rpeak, data$TotalCores)
 cor(data$Rpeak, lm.resid)
 cor(data$TotalCores, lm.resid)
 
+# approfondimento analisi dei residui: valutazione modello di regressione
+# lineare con tutti i fattori
+lm.1.resid = residuals(lm.1)
+shapiro.test(lm.1.resid)
+
+# approfondimento analisi dei residui: valutazione modello di regressione
+# lineare semplice
+lm.4.resid = residuals(lm.4)
+shapiro.test(lm.4.resid)
+
 # approfondimento analisi dei residui: rimozione residui relativi agli outliers
-Residuals_outliers <- boxplot(lm.resid, plot=TRUE)$out
+boxplot(lm.resid, main="Boxplot residui iniziali", col=(c("gold","darkgreen")), outcol="red")
+Residuals_outliers <- boxplot(lm.resid, plot=FALSE)$out
 Residuals_outliers <- rev(sort(Residuals_outliers))
 Residuals_outliers
-length(Residuals_outliers)
 lm.resid<-lm.resid[-which(lm.resid %in% Residuals_outliers[1:length(Residuals_outliers)])]
+
+# plot residui: non ho usato predict(lm) dato che avendo eliminato alcuni dei
+# residui ora ho dimensioni differenti
+plot(lm.resid)
 
 # visualizziamo nuovamente i grafici relativi ai residui per vedere se la loro
 # distribuzione sia migliorata o meno
@@ -146,6 +160,11 @@ shapiro.test(lm.resid)
 lm.resid.ord = sort(lm.resid)
 lm.resid<-lm.resid[-which(lm.resid %in% lm.resid.ord[1:20])]
 lm.resid<-lm.resid[-which(lm.resid %in% lm.resid.ord[410:467])]
+boxplot(lm.resid, main="Boxplot residui dopo la rimozione degli outliers", col=(c("gold","darkgreen")), outcol="red")
+
+# plot residui: non ho usato predict(lm) dato che avendo eliminato alcuni dei
+# residui ora ho dimensioni differenti
+plot(lm.resid)
 
 # visualizziamo nuovamente i grafici relativi ai residui per vedere se la loro
 # distribuzione sia migliorata o meno
