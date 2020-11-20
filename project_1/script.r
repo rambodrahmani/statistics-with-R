@@ -117,6 +117,10 @@ hist(lm.resid, 100, freq = FALSE)
 lines(sort(lm.resid), dnorm(sort(lm.resid), mean(lm.resid), sd(lm.resid)), col="red", lwd=2)
 qqnorm(lm.resid)
 qqline(lm.resid, col="red", lwd=2)
+skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3)
+skewness
+kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
+kurtosi
 shapiro.test(lm.resid)
 
 # approfondimento analisi dei residui: calcolo della correlazione tra i
@@ -153,6 +157,10 @@ hist(lm.resid, 100, freq = FALSE)
 lines(sort(lm.resid), dnorm(sort(lm.resid), mean(lm.resid), sd(lm.resid)), col="red", lwd=2)
 qqnorm(lm.resid)
 qqline(lm.resid, col="red", lwd=2)
+skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3)
+skewness
+kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
+kurtosi
 shapiro.test(lm.resid)
 
 # approfondimento analisi dei residui: rimozione dei residui che causano la
@@ -173,6 +181,10 @@ hist(lm.resid, 100, freq = FALSE)
 lines(sort(lm.resid), dnorm(sort(lm.resid), mean(lm.resid), sd(lm.resid)), col="red", lwd=2)
 qqnorm(lm.resid)
 qqline(lm.resid, col="red", lwd=2)
+skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3)
+skewness
+kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
+kurtosi
 shapiro.test(lm.resid)
 
 # costruzione modello regressione esponenziale

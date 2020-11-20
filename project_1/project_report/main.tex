@@ -179,9 +179,10 @@ quello globale), possiamo concludere che il modello di regressione che abbiamo
 ottenuto cattura buona parte del problema ed \`e statisticamente significativo.
 \subsubsection{Analisi dei Residui}
 Soddisfatto del modello ho proceduto con l'analisi dei residui. Dal diagramma di
-dispersione, dall'istogramma, dal QQ\_plot e dai risultati ottenuti dal 
-Test di Shapiro-Wilk \`e evidente che la distribuzione dei residui \`e ben
-lontana dall'essere la Gaussiana che cerchiamo:
+dispersione, dall'istogramma, dal QQ\_plot, dal valore della skewness e della
+kurtosi e dai risultati ottenuti dal Test di Shapiro-Wilk \`e evidente che la
+distribuzione dei residui \`e ben lontana dall'essere la Gaussiana che
+cerchiamo:
 \clearpage
 \begin{figure}[H]
 	\vspace{-1cm}
@@ -190,6 +191,11 @@ lontana dall'essere la Gaussiana che cerchiamo:
 \end{figure}
 \vspace{-0.8cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3); skewness
+[1] -9.094902
+> kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3; kurtosi
+[1] 125.4671
+
 > shapiro.test(lm.resid)
 
 	Shapiro-Wilk normality test
@@ -198,7 +204,7 @@ data:  lm.resid
 W = 0.28981, p-value < 2.2e-16
 \end{lstlisting}
 \vspace{0.2cm}
-Per approfondire, ho analizzato, la correlazione tra i predittori utilizzati, se
+Per approfondire, ho analizzato la correlazione tra i predittori utilizzati, se
 eventualmente i residui del modello fossero correlati con uno dei predittori, un
 modello di regressione con tutti i predittori disponibili e un modello di
 regressione lineare semplice. I risultati per\`o non sono stati comunque
@@ -207,15 +213,12 @@ soddisfacenti:
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
 > cor(data$Rpeak, data$TotalCores)
 [1] 0.7525282
-
 > cor(data$Rpeak, lm.resid)
 [1] 1.965037e-15
-
 > cor(data$TotalCores, lm.resid)
 [1] 8.458876e-16
 
-> # approfondimento analisi dei residui: valutazione modello di regressione
-> # lineare con tutti i fattori
+> # approfondimento analisi dei residui: valutazione modello di regressione lineare con tutti i fattori
 > lm.1.resid = residuals(lm.1)
 > shapiro.test(lm.1.resid)
 
@@ -224,8 +227,7 @@ soddisfacenti:
 data:  lm.1.resid
 W = 0.31715, p-value < 2.2e-16
 
-> # approfondimento analisi dei residui: valutazione modello di regressione
-> # lineare semplice
+> # approfondimento analisi dei residui: valutazione modello di regressione lineare semplice
 > lm.4.resid = residuals(lm.4)
 > shapiro.test(lm.4.resid)
 
@@ -255,6 +257,14 @@ migliore ma comunque non perfetto:
 \end{figure}
 \vspace{-1cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3)
+> skewness
+[1] 0.08041151
+
+> kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
+> kurtosi
+[1] -1.008218
+
 > shapiro.test(lm.resid)
 
 	Shapiro-Wilk normality test
@@ -262,8 +272,8 @@ migliore ma comunque non perfetto:
 data:  lm.resid
 W = 0.97162, p-value = 8.588e-06
 \end{lstlisting}
-Da notare comunque la diminuzione di del valore del p-value di $10$ ordini di
-grandezza.
+Da notare comunque la diminuzione del valore del p-value di $10$ ordini di
+grandezza, e il netto miglioramento dei valori di skewness e kurtosi.
 
 \subsection{Modello di Regressione Esponenziale}
 Non contento, nella speranza di riuscire ad ottenere un modello di regressione
