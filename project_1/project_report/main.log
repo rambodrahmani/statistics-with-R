@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2020.11.5)  20 NOV 2020 12:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2020.11.5)  20 NOV 2020 12:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -562,42 +562,42 @@ Overfull \hbox (14.68637pt too wide) in paragraph at lines 221--222
 [4
 
  <./imgs/residuals.pdf>]
-<imgs/residuals_boxplots.pdf, id=172, 759.83875pt x 410.53375pt>
+<imgs/residuals_boxplots.pdf, id=173, 759.83875pt x 410.53375pt>
 File: imgs/residuals_boxplots.pdf Graphic file (type pdf)
 <use imgs/residuals_boxplots.pdf>
-Package pdftex.def Info: imgs/residuals_boxplots.pdf  used on input line 252.
+Package pdftex.def Info: imgs/residuals_boxplots.pdf  used on input line 253.
 (pdftex.def)             Requested size: 531.8835pt x 287.37166pt.
 
-Overfull \hbox (53.12471pt too wide) in paragraph at lines 251--252
+Overfull \hbox (53.12471pt too wide) in paragraph at lines 252--253
  |  [] 
  []
 
-<imgs/residuals_2.pdf, id=173, 759.83875pt x 410.53375pt>
+<imgs/residuals_2.pdf, id=174, 759.83875pt x 410.53375pt>
 File: imgs/residuals_2.pdf Graphic file (type pdf)
 <use imgs/residuals_2.pdf>
-Package pdftex.def Info: imgs/residuals_2.pdf  used on input line 255.
+Package pdftex.def Info: imgs/residuals_2.pdf  used on input line 256.
 (pdftex.def)             Requested size: 531.8835pt x 287.37166pt.
 
-Overfull \hbox (53.12471pt too wide) in paragraph at lines 254--256
+Overfull \hbox (53.12471pt too wide) in paragraph at lines 255--257
  []|  [] 
  []
 
 [5
 
  <./imgs/residuals_boxplots.pdf> <./imgs/residuals_2.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 288.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 287.
  [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 288.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 287.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 288.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 288.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 287.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 287.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 5A5FEBB7EC9B7B1F6959127CBB69C133;723.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 288.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 287.
  ) 
 Here is how much of TeX's memory you used:
- 9272 strings out of 492982
- 137244 string characters out of 6134896
+ 9269 strings out of 492982
+ 137199 string characters out of 6134896
  277052 words of memory out of 5000000
  12633 multiletter control sequences out of 15000+600000
  12124 words of font info for 43 fonts, out of 8000000 for 9000
@@ -607,21 +607,22 @@ Here is how much of TeX's memory you used:
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
-0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on main.pdf (6 pages, 632431 bytes).
+f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cmextra/cmmib8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on main.pdf (6 pages, 639499 bytes).
 PDF statistics:
- 284 PDF objects out of 1000 (max. 8388607)
+ 285 PDF objects out of 1000 (max. 8388607)
  246 compressed objects within 3 object streams
- 101 named destinations out of 1000 (max. 500000)
+ 98 named destinations out of 1000 (max. 500000)
  119 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -166,8 +166,8 @@ shapiro.test(lm.resid)
 # approfondimento analisi dei residui: rimozione dei residui che causano la
 # deviazione dal un modello Gaussiano
 lm.resid.ord = sort(lm.resid)
-lm.resid<-lm.resid[-which(lm.resid %in% lm.resid.ord[1:20])]
-lm.resid<-lm.resid[-which(lm.resid %in% lm.resid.ord[410:467])]
+lm.resid<-lm.resid[-which(lm.resid %in% lm.resid.ord[1:10])]
+lm.resid<-lm.resid[-which(lm.resid %in% lm.resid.ord[400:467])]
 boxplot(lm.resid, main="Boxplot residui dopo la rimozione degli outliers", col=(c("gold","darkgreen")), outcol="red")
 
 # plot residui: non ho usato predict(lm) dato che avendo eliminato alcuni dei

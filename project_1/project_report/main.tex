@@ -238,12 +238,13 @@ W = 0.27671, p-value < 2.2e-16
 \end{lstlisting}
 \vspace{0.2cm}
 La mia ipotesi allora, dato che la distribuzione \`e comunque centrata in zero e
-ricorda l'andamento di una Gaussiana, \`e stata che fosse a causa della presenza
-di alcuni valori numerici eccessivamente elevati rispetto alla media. Dopo aver
-rimosso questo primo sotto insieme di residui, ho notato che probabilmente fosse
-necessario rimuovere una parte dei residui che causavano una forte deviazione
-da una distribuzione Gaussiana. Cos\`i facendo ho ottenuto un modello certamente
-migliore ma comunque non perfetto:
+ricorda l'andamento di una Gaussiana, e dato il valore di kurtosi pari a
+$125.4671$ \`e stata che fosse a causa della presenza di alcuni valori numerici
+eccessivamente elevati rispetto alla media. Dopo aver rimosso questo primo
+sottoinsieme di residui, ho notato che probabilmente fosse necessario rimuovere
+una parte dei residui che causavano una forte deviazione da una distribuzione
+Gaussiana. Cos\`i facendo ho ottenuto un modello certamente migliore ma
+comunque non perfetto:
 \clearpage
 \begin{figure}[H]
 	\vspace{-1cm}
@@ -257,23 +258,21 @@ migliore ma comunque non perfetto:
 \end{figure}
 \vspace{-1cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
-> skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3)
-> skewness
-[1] 0.08041151
+> skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3); skewness
+[1] -0.1425333
 
-> kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
-> kurtosi
-[1] -1.008218
-
+> kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3; kurtosi
+[1] -0.6050292
 > shapiro.test(lm.resid)
 
 	Shapiro-Wilk normality test
 
 data:  lm.resid
-W = 0.97162, p-value = 8.588e-06
+W = 0.98125, p-value = 0.0003422
 \end{lstlisting}
-Da notare comunque la diminuzione del valore del p-value di $10$ ordini di
-grandezza, e il netto miglioramento dei valori di skewness e kurtosi.
+Da notare comunque la diminuzione del valore del p-value di ben oltre $10$
+ordini di grandezza nel Test di Shapiro-Wilk, e il netto miglioramento dei
+valori di skewness e kurtosi.
 
 \subsection{Modello di Regressione Esponenziale}
 Non contento, nella speranza di riuscire ad ottenere un modello di regressione

@@ -6,6 +6,6 @@
 \contentsline {section}{\numberline {3}Analisi}{3}{section.3}
 \contentsline {subsection}{\numberline {3.1}Modello di Regressione Lineare}{3}{subsection.3.1}
 \contentsline {subsubsection}{\numberline {3.1.1}Analisi dei Residui}{3}{subsubsection.3.1.1}
-\contentsline {subsection}{\numberline {3.2}Modello di Regressione Esponenziale}{6}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Modello di Regressione Esponenziale}{5}{subsection.3.2}
 \contentsline {subsubsection}{\numberline {3.2.1}Analisi dei Residui}{6}{subsubsection.3.2.1}
 \contentsline {section}{\numberline {4}Conclusioni}{6}{section.4}
