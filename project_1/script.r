@@ -106,7 +106,7 @@ xl <- expression(R^2 ~ e ~ R^2 ~ Corretto ~ dei ~ 4 ~ Modelli ~ di ~ Regressione
 plot(r[,1], pch = 19, type = "b", col = "red", xaxt="n", ylab = "", ylim = c(ymin,ymax), xlab = xl, cex = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 axis(1 , at = 0:4, labels = 0:4)
 lines(r[,2], pch = 19, type = "b", col = "blue")
-legend(3.5, 0.9696, legend=c(r_squared, r_squared_adj), col=c("red", "blue"), lty=1:1)
+legend(3.53, 0.9696, legend=c(r_squared, r_squared_adj), col=c("red", "blue"), lty=1:1)
 
 # modello di regressione lineare
 lm = lm.3
