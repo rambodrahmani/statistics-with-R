@@ -250,37 +250,141 @@ comunque non perfetto:
 	\vspace{-1cm}
 	\begin{center}
 		\hspace*{-1.5cm}
-		\includegraphics[scale=0.7]{imgs/residuals_boxplots.pdf}\\
-		\vspace{-1.5cm}
+		\includegraphics[scale=0.7]{imgs/residuals_boxplots.pdf}
+	\end{center}
+\end{figure}
+\vspace{-2cm}\noindent
+Per la precisione, sono stati rimossi $40$ campioni per ottenere il seguente
+risultato:
+\begin{figure}[H]
+	\begin{center}
 		\hspace*{-1.5cm}
 		\includegraphics[scale=0.7]{imgs/residuals_2.pdf}
 	\end{center}
 \end{figure}
-\vspace{-1cm}
+\vspace{-1.1cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
 > skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3); skewness
-[1] -0.1425333
+[1] 0.2961855
 
 > kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3; kurtosi
-[1] -0.6050292
+[1] -0.3962842
+
 > shapiro.test(lm.resid)
 
 	Shapiro-Wilk normality test
 
 data:  lm.resid
-W = 0.98125, p-value = 0.0003422
+W = 0.98522, p-value = 0.0007833
 \end{lstlisting}
 Da notare comunque la diminuzione del valore del p-value di ben oltre $10$
 ordini di grandezza nel Test di Shapiro-Wilk, e il netto miglioramento dei
-valori di skewness e kurtosi.
-
+valori di skewness e kurtosi. Dobbiamo certamente sottolineare che, con una
+proporzione di varianza spiegata dal modello pari al $96\%$, l'errore introdotto
+dalla non normalit\`a della distribuzione dei residui, rappresenta una
+piccolissima parte di struttura che non riusciamo a catturare.
 \subsection{Modello di Regressione Esponenziale}
 Non contento, nella speranza di riuscire ad ottenere un modello di regressione
 con un valore di $\boldsymbol{R^2}$ leggermente minore, ma con una distribuzione
 dei residui migliore, ho provato una analisi tramite modello di regressione
-esponenziale.
+esponenziale. Seguendo lo stesso filone di ragionamento e con le dovute
+accortezze, riassumo di seguito i risultati ottenuti:
+\begin{figure}[h]
+	\hspace{-2.15cm}
+	\begin{minipage}{.6\textwidth} 
+		\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> summary(lm)
 
+Call:
+lm(formula = log(Rmax) ~ log(Rpeak) + log(TotalCores), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-3.12824 -0.08284  0.07566  0.12253  0.88843 
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)     -0.24672    0.19428  -1.270    0.205    
+log(Rpeak)       0.65997    0.02967  22.246  < 2e-16 ***
+log(TotalCores)  0.23030    0.02847   8.088 4.66e-15 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.3061 on 497 degrees of freedom
+Multiple R-squared:  0.8203,	Adjusted R-squared:  0.8195 
+F-statistic:  1134 on 2 and 497 DF,  p-value: < 2.2e-16
+		\end{lstlisting}
+	\end{minipage}
+	\begin{minipage}{0.5\textwidth} 
+		\includegraphics[scale=.4]{imgs/r_squared_exp.pdf}
+	\end{minipage}
+\end{figure}
+notiamo quindi un passaggio da una Varianza spiegata del $96\%$ con un modello
+di regressione lineare, all'$82\%$ del modello esponenziale.
 \subsubsection{Analisi dei Residui}
+I valori di partenza dell'analisi dei residui riguardanti il modello
+esponenziale non sono certamente perfetti ma comunque migliori di quelli del
+modello lineare.
+\begin{figure}[H]
+	\hspace{-1.5cm}
+	\includegraphics[scale=0.7]{imgs/residuals_exp.pdf}
+\end{figure}
+\vspace{-0.8cm}
+\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3); skewness
+[1] -3.561324
+
+> kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3; kurtosi
+[1] 28.8915
+
+> shapiro.test(lm.resid)
+
+	Shapiro-Wilk normality test
+
+data:  lm.resid
+W = 0.74598, p-value < 2.2e-16
+\end{lstlisting}
+Ugualmente a quanto fatto nell'analisi dei residui del modello di regressione
+lineare, ho rimosso una parte dei residui che causavano una forte deviazione da
+una distribuzione Gaussiana.
+\begin{figure}[H]
+	\vspace{-1cm}
+	\begin{center}
+		\hspace*{-1.5cm}
+		\includegraphics[scale=0.7]{imgs/residuals_boxplots_exp.pdf}
+	\end{center}
+\end{figure}
+\vspace{-2cm}\noindent
+Per la precisione, sono stati rimossi $40$ campioni per ottenere il seguente
+risultato:
+\begin{figure}[H]
+	\begin{center}
+		\hspace*{-1.5cm}
+		\includegraphics[scale=0.7]{imgs/residuals_2_exp.pdf}
+	\end{center}
+\end{figure}
+\vspace{-1.1cm}
+\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3); skewness
+[1] 0.04635719
+
+> kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3; kurtosi
+[1] -0.5150052
+
+> shapiro.test(lm.resid)
+
+	Shapiro-Wilk normality test
+
+data:  lm.resid
+W = 0.98905, p-value = 0.008154
+\end{lstlisting}
+I valori di skewness e kurtosi sono certamente accetabili anche se il p-value
+del Test di Shapiro-Wilk, che comunque \`e migliorato aumentando di un ordine di
+grandezza rispetto ai residui del modello di regressione lineare, rimane
+comunque ancora basso. Dobbiamo infatti tenere a mente che questo migliorando
+dei risultati del Test di Shapiro-Wilk lo stiamo pagando in termini del valore
+di $\boldsymbol{R^2}$ che \`e passato, lo ricordiamo, da $96\%$ a $82\%$.
+\section{Predizioni}
 
 \section{Conclusioni}
 
