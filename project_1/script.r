@@ -100,10 +100,13 @@ r[4,]= c(summary(lm.4)$r.squared, summary(lm.4)$adj.r.squared)
 # traccio il grafico di comparazione degli R^2 e R^2 corretti
 ymin = min(r)
 ymax = max(r)
+r_squared <- expression(R^2)
+r_squared_adj <- expression(R^2 ~ Corretto)
 xl <- expression(R^2 ~ e ~ R^2 ~ Corretto ~ dei ~ 4 ~ Modelli ~ di ~ Regressione ~ Lineare ~ Valutati)
 plot(r[,1], pch = 19, type = "b", col = "red", xaxt="n", ylab = "", ylim = c(ymin,ymax), xlab = xl, cex = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 axis(1 , at = 0:4, labels = 0:4)
 lines(r[,2], pch = 19, type = "b", col = "blue")
+legend(3.5, 0.9696, legend=c(r_squared, r_squared_adj), col=c("red", "blue"), lty=1:1)
 
 # modello di regressione lineare
 lm = lm.3
@@ -179,6 +182,7 @@ plot(lm.resid)
 par(mfrow=c(1, 2))
 hist(lm.resid, 100, freq = FALSE)
 lines(sort(lm.resid), dnorm(sort(lm.resid), mean(lm.resid), sd(lm.resid)), col="red", lwd=2)
+lines(density(lm.resid), col="blue", lwd=2)
 qqnorm(lm.resid)
 qqline(lm.resid, col="red", lwd=2)
 skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3)
