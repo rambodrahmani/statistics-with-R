@@ -180,7 +180,7 @@ ottenuto cattura buona parte del problema ed \`e statisticamente significativo.
 \subsubsection{Analisi dei Residui}
 Soddisfatto del modello ho proceduto con l'analisi dei residui. Dal diagramma di
 dispersione, dall'istogramma, dal QQ\_plot, dal valore della skewness e della
-kurtosi e dai risultati ottenuti dal Test di Shapiro-Wilk \`e evidente che la
+kurtosi e dai risultati ottenuti dal Test di Shapiro-Wilk, \`e evidente che la
 distribuzione dei residui \`e ben lontana dall'essere la Gaussiana che
 cerchiamo:
 \clearpage
@@ -357,8 +357,8 @@ che dipendono dal fatto che la tabella di dati raccoglie informazioni
 riguardanti Supercomputer dal 2010 al 2020. Sappiamo bene quanto aumentino
 bruscamente le prestazioni dei computer in un arco di tempo pari a 10 anni. In
 questo contesto quindi, per "anomalo" non intendiamo certo errato ma bens\`i
-parecchio diverso. L'analisi di regressione sicuramente soffre per la presenza
-di questi fattori.}
+diverso. L'analisi di regressione sicuramente soffre per la presenza di questi
+fattori.}
 \begin{figure}[H]
 	\vspace{-1.3cm}
 	\begin{center}
@@ -390,25 +390,23 @@ risultato:
 data:  lm.resid
 W = 0.98905, p-value = 0.008154
 \end{lstlisting}
-I valori di skewness e kurtosi sono certamente accetabili anche se il p-value
-del Test di Shapiro-Wilk, che comunque \`e migliorato aumentando di un ordine di
-grandezza rispetto ai residui del modello di regressione lineare, rimane
-comunque ancora basso. Dobbiamo infatti tenere a mente che questo migliorando
-dei risultati del Test di Shapiro-Wilk lo stiamo pagando in termini del valore
-di $\boldsymbol{R^2}$ che \`e passato, lo ricordiamo, da $96\%$ a $82\%$. A
-questo punto, per esprimere un giudizio finale definitivo, comparer\`o i due
-modelli in fase di predizione.
+I valori di skewness e kurtosi sono certamente accetabili anche se il
+\textbf{p-value} del Test di Shapiro-Wilk, che comunque \`e \textbf{migliorato
+aumentando di un ordine di grandezza} rispetto ai residui del modello di
+regressione lineare, rimane comunque ancora basso. Dobbiamo infatti tenere a
+mente che questo miglioramento dei risultati del Test di Shapiro-Wilk lo stiamo
+pagando in termini del valore di $\boldsymbol{R^2}$ che \`e passato, lo
+ricordiamo, da $96\%$ a $82\%$. A questo punto, per esprimere un giudizio finale
+definitivo, comparer\`o i due modelli in fase di predizione.
 \section{Predizione e autovalutazione}
 Dato che, al termine del processo di eliminazione dei fattori, ho ottenuto un
 modello, sia nel caso lineare che nel caso logaritmico, con due predittori e un
 fattore di uscita, ho pensato di rappresentare entrambi i modelli tramite una
 grafico di dispersione 3D:
-\clearpage
 \begin{figure}[H]
 	\begin{center}
-		\vspace{-1.0cm}
 		\hspace*{-2.7cm}
-		\includegraphics[scale=0.7]{imgs/scatterplot_3d.pdf}
+		\includegraphics[scale=0.66]{imgs/scatterplot_3d.pdf}
 		\vspace{-1cm}
 	\end{center}
 \end{figure}
@@ -465,7 +463,7 @@ inferiore rispetto a quella del modello lineare, possiamo quindi considerarlo
 molto pi\`u affidabile. La seguente figura riassume la simulazione eseguita:
 \begin{figure}[H]
 	\begin{center}
-		\vspace{-1.5cm}
+		\vspace{-0.5cm}
 		\hspace*{-2.7cm}
 		\includegraphics[scale=0.65]{imgs/simulation.pdf}
 		\vspace{-1cm}
