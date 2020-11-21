@@ -247,7 +247,7 @@ Gaussiana. Cos\`i facendo ho ottenuto un modello certamente migliore ma
 comunque non perfetto:
 \clearpage
 \begin{figure}[H]
-	\vspace{-1cm}
+	\vspace{-1.5cm}
 	\begin{center}
 		\hspace*{-1.5cm}
 		\includegraphics[scale=0.7]{imgs/residuals_boxplots.pdf}
@@ -284,15 +284,16 @@ valori di skewness e kurtosi. Dobbiamo certamente sottolineare che, con una
 proporzione di varianza spiegata dal modello pari al $96\%$, l'errore introdotto
 dalla non normalit\`a della distribuzione dei residui, rappresenta una
 piccolissima parte di struttura che non riusciamo a catturare.
-\subsection{Modello di Regressione Esponenziale}
+\subsection{Modello di Regressione Logaritmico}
 Non contento, nella speranza di riuscire ad ottenere un modello di regressione
 con un valore di $\boldsymbol{R^2}$ leggermente minore, ma con una distribuzione
-dei residui migliore, ho provato una analisi tramite modello di regressione
-esponenziale. Seguendo lo stesso filone di ragionamento e con le dovute
-accortezze, riassumo di seguito i risultati ottenuti:
+dei residui migliore, ho provato una analisi tramite modello di regressione non
+lineare. Quindi ho usato la trasformazione logaritmica per effettuare un
+\textit{fit} esponenziale. Seguendo lo stesso filone di ragionamento e con le
+dovute accortezze, riassumo di seguito i risultati ottenuti:
 \clearpage
 \begin{figure}[h]
-	\vspace{-1cm}
+	\vspace{-1.5cm}
 	\hspace{-2.15cm}
 	\begin{minipage}{.6\textwidth} 
 		\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
@@ -319,19 +320,19 @@ F-statistic:  1134 on 2 and 497 DF,  p-value: < 2.2e-16
 		\end{lstlisting}
 	\end{minipage}
 	\begin{minipage}{0.5\textwidth} 
-		\includegraphics[scale=.4]{imgs/r_squared_exp.pdf}
+		\includegraphics[scale=.36]{imgs/r_squared_log.pdf}
 	\end{minipage}
 \end{figure}
 \vspace{-0.4cm}\noindent
 Notiamo quindi un passaggio da una Varianza spiegata del $96\%$ con un modello
-di regressione lineare, all'$82\%$ del modello esponenziale.
+di regressione lineare, all'$82\%$ del modello logaritmico.
 \subsubsection{Analisi dei Residui}
 I valori di partenza dell'analisi dei residui riguardanti il modello
-esponenziale non sono certamente perfetti ma comunque migliori di quelli del
+logaritmico non sono certamente perfetti ma comunque migliori di quelli del
 modello lineare.
 \begin{figure}[H]
 	\hspace{-1.5cm}
-	\includegraphics[scale=0.7]{imgs/residuals_exp.pdf}
+	\includegraphics[scale=0.7]{imgs/residuals_log.pdf}
 \end{figure}
 \vspace{-0.8cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
@@ -359,10 +360,10 @@ questo contesto quindi, per "anomalo" non intendiamo certo errato ma bens\`i
 parecchio diverso. L'analisi di regressione sicuramente soffre per la presenza
 di questi fattori.}
 \begin{figure}[H]
-	\vspace{-1cm}
+	\vspace{-1.3cm}
 	\begin{center}
 		\hspace*{-1.5cm}
-		\includegraphics[scale=0.7]{imgs/residuals_boxplots_exp.pdf}
+		\includegraphics[scale=0.7]{imgs/residuals_boxplots_log.pdf}
 	\end{center}
 \end{figure}
 \vspace{-1cm}\noindent
@@ -371,7 +372,7 @@ risultato:
 \begin{figure}[H]
 	\begin{center}
 		\hspace*{-1.5cm}
-		\includegraphics[scale=0.7]{imgs/residuals_2_exp.pdf}
+		\includegraphics[scale=0.7]{imgs/residuals_2_log.pdf}
 	\end{center}
 \end{figure}
 \vspace{-0.9cm}
@@ -397,14 +398,15 @@ dei risultati del Test di Shapiro-Wilk lo stiamo pagando in termini del valore
 di $\boldsymbol{R^2}$ che \`e passato, lo ricordiamo, da $96\%$ a $82\%$. A
 questo punto, per esprimere un giudizio finale definitivo, comparer\`o i due
 modelli in fase di predizione.
-\section{Predizioni}
+\section{Predizione e autovalutazione}
 Dato che, al termine del processo di eliminazione dei fattori, ho ottenuto un
-modello, sia nel caso lineare che nel caso esponenziale, con due predittori e un
+modello, sia nel caso lineare che nel caso logaritmico, con due predittori e un
 fattore di uscita, ho pensato di rappresentare entrambi i modelli tramite una
 grafico di dispersione 3D:
-\vspace{-0.5cm}
+\clearpage
 \begin{figure}[H]
 	\begin{center}
+		\vspace{-1.0cm}
 		\hspace*{-2.7cm}
 		\includegraphics[scale=0.7]{imgs/scatterplot_3d.pdf}
 		\vspace{-1cm}
@@ -412,14 +414,78 @@ grafico di dispersione 3D:
 \end{figure}
 \noindent
 Ritengo che sia utile dato che ci mostra in maniera visiva quanto abbiamo
-concluso nelle fasi precedenti della nostra analisi: il modello esponenziale,
+concluso nelle fasi precedenti della nostra analisi: il modello logaritmico,
 tramite il cambio di scala, riesce ad attenuare l'affetto dispersivo dovuto
-alla presenza degli outliers nella tabella di dati originale.
+alla presenza degli outliers nella tabella di dati originale.\\
+\\
+In fase di predizione e autovalutazione, i due modelli sono stati messi a
+confronto. Le osservazioni della tabella originale sono state suddivise in un
+sottoinsieme di $50$ osservazioni, utilizzato come insieme di predizione, e un
+sottoinsieme di $450$ osservazioni, utilizzato come insieme di allenamento del
+modello. Ho osservato che questa diminuzione del numero di osservazioni
+utilizzato per la costruzione dei due modelli non ha inciso drasticamente sulla
+proporzione di varianza spiegata dal modello. Oscilla intorno al $96\%$ per
+quanto riguarda il modello libeare e intorno al $82\%$ per quanto riguarda il
+modello logaritmico.
+\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> summary(data_train.lm)$r.squared
+[1] 0.9692249
 
+> summary(ldata_train.lm)$r.squared
+[1] 0.8195792
+
+> data_train.lm.p = predict(data_train.lm, data_test)
+> ldata_train.lm.p = predict(ldata_train.lm, ldata_test)
+
+> sqrt(mean((data_train.lm.p - data_train$Rmax)^2))
+[1] 23126.91
+
+> sqrt(mean((exp(ldata_train.lm.p) - data_train$Rmax)^2))
+[1] 23190.9
+\end{lstlisting}
+Considerare lo scarto medio di una sola estrazione di sottoinsiemi, di un solo
+esperimento quindi, non porta certamente risultati statisticamente
+significativi. Ho ripetuto l'esperimento quindi $50$ volte:
+\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
+> mean(err_lin)
+[1] 24802.19
+
+> mean(err_log)
+[1] 22593.09
+
+> sd(err_lin)
+[1] 6244.185
+
+> sd(err_log)
+[1] 782.1269
+\end{lstlisting}
+In media quindi, il modello logaritmico, ha una media di errore pi\`u bassa.
+Inoltre, la deviazione standard del modello logaritmico \`e nettamente
+inferiore rispetto a quella del modello lineare, possiamo quindi considerarlo
+molto pi\`u affidabile. La seguente figura riassume la simulazione eseguita:
+\begin{figure}[H]
+	\begin{center}
+		\vspace{-1.5cm}
+		\hspace*{-2.7cm}
+		\includegraphics[scale=0.65]{imgs/simulation.pdf}
+		\vspace{-1cm}
+	\end{center}
+\end{figure}
 \section{Conclusioni}
+Quanto \`e stato perso in varianza spiegata dal modello nel modello
+logaritmico, ha portato ad un errore con un test di shapiro will con un
+p-value pi\`u alto di un ordine di grandezza rispetto al modello lineare. Come
+possiamo vedere dai risultati della simulazione eseguita, effettivamente, il
+modello logaritmico in media sbaglia di meno, e ha un comportamento, in fase di
+predizione, pi\`u affidabile rispetto al modello lineare.\\
+\\
 Fare considerazioni anche sul fatto che la tabella ha molte colonne contenente
 dati categorici che non vengono presi in esame in questa analisi di regressione.
 Tali parametri, forse, potrebbero aiutarci a ottenere residui migliori? Non
 saprei, ricordiamoci infatti che, secondo me, il comportamento dei residui, \`e
-dovuto alla presenza di valori "anomali" nel data set iniziale.
+dovuto alla presenza di valori "anomali" nel data set iniziale.\\
+\\
+Fare approfondimento del contesto industriale lavorativo immaginato. O
+aggiungendo una parte alla fine della relazione, oppure migliorando
+l'introuzione. Aggiungere stime di confidenza.
 \end{document}

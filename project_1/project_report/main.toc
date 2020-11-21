@@ -6,7 +6,7 @@
 \contentsline {section}{\numberline {3}Analisi}{3}{section.3}
 \contentsline {subsection}{\numberline {3.1}Modello di Regressione Lineare}{3}{subsection.3.1}
 \contentsline {subsubsection}{\numberline {3.1.1}Analisi dei Residui}{3}{subsubsection.3.1.1}
-\contentsline {subsection}{\numberline {3.2}Modello di Regressione Esponenziale}{5}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Modello di Regressione Logaritmico}{5}{subsection.3.2}
 \contentsline {subsubsection}{\numberline {3.2.1}Analisi dei Residui}{6}{subsubsection.3.2.1}
-\contentsline {section}{\numberline {4}Predizioni}{7}{section.4}
-\contentsline {section}{\numberline {5}Conclusioni}{8}{section.5}
+\contentsline {section}{\numberline {4}Predizione e autovalutazione}{7}{section.4}
+\contentsline {section}{\numberline {5}Conclusioni}{9}{section.5}
