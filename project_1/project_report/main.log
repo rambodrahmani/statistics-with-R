@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2020.11.5)  21 NOV 2020 17:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2020.11.5)  21 NOV 2020 18:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -689,15 +689,15 @@ Overfull \hbox (84.95471pt too wide) in paragraph at lines 408--411
 pdfTeX warning: pdflatex (file ./imgs/residuals_2_exp.pdf): PDF inclusion: mult
 iple pdfs with page group included in a single page
 >]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 421.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 425.
  [8 <./imgs/scatterplot_3d.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 421.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 425.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 421.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 421.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 425.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 425.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 11469A3348B42A71BF96951EEB5847D2;769.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 421.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 425.
  ) 
 Here is how much of TeX's memory you used:
  9353 strings out of 492982
@@ -723,7 +723,7 @@ s/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
 hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on main.pdf (8 pages, 1816429 bytes).
+Output written on main.pdf (8 pages, 1816960 bytes).
 PDF statistics:
  405 PDF objects out of 1000 (max. 8388607)
  348 compressed objects within 4 object streams

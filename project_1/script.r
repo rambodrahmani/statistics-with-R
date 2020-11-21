@@ -212,6 +212,7 @@ kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
 kurtosi
 shapiro.test(lm.resid)
 
+# modello lineare definitivo
 linearModel = lm
 
 ################################################################################
@@ -337,11 +338,8 @@ kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
 kurtosi
 shapiro.test(lm.resid)
 
+# modello esponenziale definitivo
 exponentialModel = lm
-
-################################################################################
-####################               PREDIZIONE               ####################
-################################################################################
 
 # comparazione scatterplot 3d dei due modelli ottenuti
 par(mfrow=c(1, 2))
@@ -351,3 +349,79 @@ s3d$plane3d(linearModel, draw_lines = F, draw_polygon = F)
 # scatterplot 3d del modello di regressione esponenziale
 s3d<-scatterplot3d(log(data$Rpeak), log(data$TotalCores), log(data$Rmax) , main="Regressione Esponenziale", pch=16, highlight.3d=TRUE, type="p", grid = T, xlab = "log(Rpeak)", ylab = "log(TotalCores)", zlab = "log(Rmax)")
 s3d$plane3d(exponentialModel, draw_lines = F, draw_polygon = F)
+
+################################################################################
+####################               PREDIZIONE               ####################
+################################################################################
+
+# dati in scala logaritmica
+ldata = log(data)
+
+# creazione sottoinsiemi di training e di test
+testset = sort(sample(500,50))
+data_train = data[-testset,]
+data_test = data[testset,]
+ldata_train = ldata[-testset,]
+ldata_test = ldata[testset,]
+
+# costruzione modelli lineare e modello esponenziale
+data_train.lm = lm(Rmax~Rpeak+TotalCores, data=data_train)
+ldata_train.lm = lm(Rmax~Rpeak+TotalCores, data=ldata_train)
+summary(data_train.lm)$r.squared
+summary(ldata_train.lm)$r.squared
+
+# calcoliamo l’errore per i due modelli.
+data_train.lm.p = predict(data_train.lm, data_test)
+ldata_train.lm.p = predict(ldata_train.lm, ldata_test)
+sqrt(mean((data_train.lm.p - data_train$Rmax)^2))
+sqrt(mean((exp(ldata_train.lm.p) - ldata_train$Rmax)^2))
+
+par(mfrow=c(1, 1))
+gmin = min(data_train.lm.p, exp(ldata_train.lm.p), data_test$Rmax)
+gmax = max(data_train.lm.p, exp(ldata_train.lm.p), ldata_test$Rmax)
+plot(data_test$Rmax, pch = 20, ylim = c(gmin, gmax))
+points(data_train.lm.p, col = "blue", pch = 20)
+points(exp(ldata_train.lm.p), col = "red", pch = 20) 
+legend("topright",inset=0.02, c("dati","modello lineare",
+                              "modello logaritmico"),col=c("black","blue","red"),
+       pch=c(19,19), bg="gray", cex=.8)
+
+
+################################################################################
+n = 100
+err_lin = rep(0,n)
+err_log = rep(0,n)
+for(i in 1:n){
+  # creazione sottoinsiemi di training e di test
+  testset = sort(sample(500,50))
+  data_train = data[-testset,]
+  data_test = data[testset,]
+  ldata_train = ldata[-testset,]
+  ldata_test = ldata[testset,]
+  
+  # costruzione modelli lineare e modello esponenziale
+  data_train.lm = lm(Rmax~Rpeak+TotalCores, data=data_train)
+  ldata_train.lm = lm(Rmax~Rpeak+TotalCores, data=ldata_train)
+  
+  # calcoliamo l’errore per i due modelli.
+  data_train.lm.p = predict(data_train.lm, data_test)
+  ldata_train.lm.p = predict(ldata_train.lm, ldata_test)
+  
+  err_lin[i] = sqrt(mean((data_train.lm.p - data_train$Rmax)^2))
+  err_log[i] = sqrt(mean((exp(ldata_train.lm.p) - ldata_train$Rmax)^2))
+}
+
+# stampa media errori
+mean(err_lin)
+mean(err_log)
+
+# stampa deviazione standard errori
+sd(err_lin)
+sd(err_log)
+
+# rappresentazione grafica
+gmin = min(err_lin, err_log)
+gmax = max(err_lin, err_log)
+
+plot(err_lin, type="b", pch=20, col="blue", ylim=c(gmin,gmax))
+points(err_log, type="b", pch=20, col="red")
