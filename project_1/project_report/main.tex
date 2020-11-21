@@ -108,8 +108,8 @@ totale delle $500$ osservazioni, le suddette colonne sono state eliminate.
 \begin{wrapfigure}{l}{1\textwidth}
 	\vspace{-0.6cm}
 	\centering
-	\includegraphics[scale=0.7]{imgs/plot(data).pdf}
-	\vspace{-0.5cm}
+	\includegraphics[scale=0.72]{imgs/plot(data).pdf}
+	\vspace{-0.4cm}
 	\caption{Diagramma di dispersione}
 \end{wrapfigure}
 \clearpage
@@ -253,9 +253,10 @@ comunque non perfetto:
 		\includegraphics[scale=0.7]{imgs/residuals_boxplots.pdf}
 	\end{center}
 \end{figure}
-\vspace{-2cm}\noindent
+\vspace{-2.2cm}\noindent
 Per la precisione, sono stati rimossi $40$ campioni per ottenere il seguente
 risultato:
+\vspace{-0.1cm}
 \begin{figure}[H]
 	\begin{center}
 		\hspace*{-1.5cm}
@@ -289,7 +290,9 @@ con un valore di $\boldsymbol{R^2}$ leggermente minore, ma con una distribuzione
 dei residui migliore, ho provato una analisi tramite modello di regressione
 esponenziale. Seguendo lo stesso filone di ragionamento e con le dovute
 accortezze, riassumo di seguito i risultati ottenuti:
+\clearpage
 \begin{figure}[h]
+	\vspace{-1cm}
 	\hspace{-2.15cm}
 	\begin{minipage}{.6\textwidth} 
 		\begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
@@ -319,7 +322,8 @@ F-statistic:  1134 on 2 and 497 DF,  p-value: < 2.2e-16
 		\includegraphics[scale=.4]{imgs/r_squared_exp.pdf}
 	\end{minipage}
 \end{figure}
-notiamo quindi un passaggio da una Varianza spiegata del $96\%$ con un modello
+\vspace{-0.4cm}\noindent
+Notiamo quindi un passaggio da una Varianza spiegata del $96\%$ con un modello
 di regressione lineare, all'$82\%$ del modello esponenziale.
 \subsubsection{Analisi dei Residui}
 I valori di partenza dell'analisi dei residui riguardanti il modello
@@ -346,7 +350,14 @@ W = 0.74598, p-value < 2.2e-16
 \end{lstlisting}
 Ugualmente a quanto fatto nell'analisi dei residui del modello di regressione
 lineare, ho rimosso una parte dei residui che causavano una forte deviazione da
-una distribuzione Gaussiana.
+una distribuzione Gaussiana. \textbf{La presenza di questi residui "anomali", in
+entrambi i modelli valutati, \`e dovuta alla presenza di osservazioni "anomale"
+che dipendono dal fatto che la tabella di dati raccoglie informazioni
+riguardanti Supercomputer dal 2010 al 2020. Sappiamo bene quanto aumentino
+bruscamente le prestazioni dei computer in un arco di tempo pari a 10 anni. In
+questo contesto quindi, per "anomalo" non intendiamo certo errato ma bens\`i
+parecchio diverso. L'analisi di regressione sicuramente soffre per la presenza
+di questi fattori.}
 \begin{figure}[H]
 	\vspace{-1cm}
 	\begin{center}
@@ -354,7 +365,7 @@ una distribuzione Gaussiana.
 		\includegraphics[scale=0.7]{imgs/residuals_boxplots_exp.pdf}
 	\end{center}
 \end{figure}
-\vspace{-2cm}\noindent
+\vspace{-1cm}\noindent
 Per la precisione, sono stati rimossi $40$ campioni per ottenere il seguente
 risultato:
 \begin{figure}[H]
@@ -363,7 +374,7 @@ risultato:
 		\includegraphics[scale=0.7]{imgs/residuals_2_exp.pdf}
 	\end{center}
 \end{figure}
-\vspace{-1.1cm}
+\vspace{-0.9cm}
 \begin{lstlisting}[language=bash,basicstyle=\tiny,tabsize=2,frame = single]
 > skewness = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^3); skewness
 [1] 0.04635719
@@ -401,8 +412,9 @@ grafico di dispersione 3D:
 \end{figure}
 \noindent
 Ritengo che sia utile dato che ci mostra in maniera visiva quanto abbiamo
-concluso nelle fasi precedenti della nostra analisi: il modello esponenziale \`e
-meno affetto dalla presenza degli outliers contenuti nella tabella originale.
+concluso nelle fasi precedenti della nostra analisi: il modello esponenziale,
+tramite il cambio di scala, riesce ad attenuare l'affetto dispersivo dovuto
+alla presenza degli outliers nella tabella di dati originale.
 
 \section{Conclusioni}
 

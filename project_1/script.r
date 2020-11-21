@@ -11,7 +11,7 @@ library(scatterplot3d)
 ################################################################################
 
 # caricamento dei dati dal file csv
-data = read.csv('data.csv', header = TRUE, sep = ";")
+data = read.csv('tabella.csv', header = TRUE, sep = ";")
 
 # rimozione colonne non utilizzate
 data$Rank <- NULL
@@ -106,6 +106,9 @@ lm.4<-lm(Rmax~Rpeak, data = data)
 summary(lm.4)
 r[4,]= c(summary(lm.4)$r.squared, summary(lm.4)$adj.r.squared)
 
+#################################################################################################
+#################    MANCA DA FARE L'ANALISI DI UN EVENTUALE ALLINEAMENTO      ##################
+#################################################################################################
 lm.5<-lm(Rmax~TotalCores, data = data)
 summary(lm.5)
 
@@ -149,7 +152,8 @@ cor(data$Rpeak, lm.resid)
 cor(data$TotalCores, lm.resid)
 
 # approfondimento analisi dei residui: valutazione modello di regressione
-# lineare con tutti i fattori
+# lineare con tutti i fattori per assicurarmi che non ci sia qualche predittore
+# che spiega quella parte di struttura che ho nei residui
 lm.1.resid = residuals(lm.1)
 shapiro.test(lm.1.resid)
 
@@ -274,7 +278,8 @@ cor(data$Rpeak, lm.resid)
 cor(data$TotalCores, lm.resid)
 
 # approfondimento analisi dei residui: valutazione modello di regressione
-# lineare con tutti i fattori
+# lineare con tutti i fattori per assicurarmi che non ci sia qualche predittore
+# che spiega quella parte di struttura che ho nei residui
 lm.1.resid = residuals(lm.1)
 shapiro.test(lm.1.resid)
 
