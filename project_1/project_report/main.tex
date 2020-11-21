@@ -459,31 +459,49 @@ significativi. Ho ripetuto l'esperimento quindi $50$ volte:
 \end{lstlisting}
 In media quindi, il modello logaritmico, ha una media di errore pi\`u bassa.
 Inoltre, la deviazione standard del modello logaritmico \`e nettamente
-inferiore rispetto a quella del modello lineare, possiamo quindi considerarlo
-molto pi\`u affidabile. La seguente figura riassume la simulazione eseguita:
+inferiore rispetto a quella del modello
+\clearpage
+\vspace*{-1.5cm}
+\noindent
+lineare, possiamo quindi considerarlo molto pi\`u affidabile. La seguente figura
+riassume la simulazione eseguita:
 \begin{figure}[H]
 	\begin{center}
-		\vspace{-0.5cm}
+		\vspace{-0.4cm}
 		\hspace*{-2.7cm}
 		\includegraphics[scale=0.65]{imgs/simulation.pdf}
-		\vspace{-1cm}
+		\vspace{-1.5cm}
 	\end{center}
 \end{figure}
 \section{Conclusioni}
-Quanto \`e stato perso in varianza spiegata dal modello nel modello
-logaritmico, ha portato ad un errore con un test di shapiro will con un
-p-value pi\`u alto di un ordine di grandezza rispetto al modello lineare. Come
-possiamo vedere dai risultati della simulazione eseguita, effettivamente, il
-modello logaritmico in media sbaglia di meno, e ha un comportamento, in fase di
-predizione, pi\`u affidabile rispetto al modello lineare.\\
+In ultima analisi, la mia ipotesi, utilizzare un modello non lineare con la
+trasformazione logaritmica, perdendo qualcosa in Varianza Spiegata dal
+modello per ottenere un andamento dei residui pi\`u "normale", si \`e rivelata
+corretta. Quando ho terminato la messa a punto dei due modelli, mi era difficile
+valutare tramite i vari diagrammi e i valori numerici dei test eseguiti. In fase
+di predizione e autovalutazione i miei dubbi sono stati risolti dai risultati
+della simulazione: effettivamente, il modello logaritmico in media sbaglia di
+meno, e ha un comportamento, in fase di predizione, pi\`u affidabile rispetto al
+modello lineare.\\
+Bisogna tenere in considerazione anche il fatto che la tabella presenta un
+numero consistente di fattori qualitativi che non abbiamo preso in
+considerazione, dato che ci siamo basati esclusivamente sui fattori
+quantitativi. Tali fattori, forse, potrebbero aiutarci a ottenere un
+$\boldsymbol{R^2}$ pi\`u elevato per il modello logaritmico e residui
+migliori.\\
 \\
-Fare considerazioni anche sul fatto che la tabella ha molte colonne contenente
-dati categorici che non vengono presi in esame in questa analisi di regressione.
-Tali parametri, forse, potrebbero aiutarci a ottenere residui migliori? Non
-saprei, ricordiamoci infatti che, secondo me, il comportamento dei residui, \`e
-dovuto alla presenza di valori "anomali" nel data set iniziale.\\
-\\
-Fare approfondimento del contesto industriale lavorativo immaginato. O
-aggiungendo una parte alla fine della relazione, oppure migliorando
-l'introuzione. Aggiungere stime di confidenza.
+Per quanto riguarda le considerazioni relative al contesto applicativo della
+presente analisi, sulle quali non mi sono voluto dilungare nella sezione
+introduttiva per lasciare spazio all'analisi stessa, certamente un modello
+statistico di questo tipo, che permetta di predire il valore \textbf{Rmax} per
+un Supercomputer, \`e utile in quanto:
+\begin{itemize}
+	\setlength\itemsep{0mm}
+	\item il "high-performance LINPACK (HPL) benchmark" richiede la
+		calibrazione di ben oltre $18$ parametri per essere eseguito;
+	\item un errore nella calibrazione di uno solo di questi parametri pu\`o
+		compromettere (eventualmente falsare) i risultati ottenuti;
+	\item mantenere un Supercomputer acceso per l'esecuzione dell'HPL ha un
+		consumo enegetico non indifferente.
+\end{itemize}
 \end{document}
