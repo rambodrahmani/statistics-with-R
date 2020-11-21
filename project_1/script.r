@@ -4,6 +4,7 @@ rm(list = ls())
 
 # importazione librerie da utilizzare
 library(corrplot)
+library(scatterplot3d)
 
 ################################################################################
 ####################    IMPORTAZIONE E PULIZIA DEI DATI    #####################
@@ -105,6 +106,9 @@ lm.4<-lm(Rmax~Rpeak, data = data)
 summary(lm.4)
 r[4,]= c(summary(lm.4)$r.squared, summary(lm.4)$adj.r.squared)
 
+lm.5<-lm(Rmax~TotalCores, data = data)
+summary(lm.5)
+
 # traccio il grafico di comparazione degli R^2 e R^2 corretti
 ymin = min(r)
 ymax = max(r)
@@ -119,6 +123,10 @@ legend(3.53, 0.9696, legend=c(r_squared, r_squared_adj), col=c("red", "blue"), l
 # modello di regressione lineare scelto
 lm = lm.3
 summary(lm)
+
+# scatterplot 3d del modello di regressione lineare
+s3d<-scatterplot3d(data$Rpeak, data$TotalCores , data$Rmax , main="Scatterplot 3D Modello di Regressione Lineare", pch=16, highlight.3d=TRUE, type="p", grid = T, xlab = "Rpeak", ylab = "TotalCores", zlab = "Rmax")
+s3d$plane3d(lm, draw_lines = F, draw_polygon = F)
 
 # analisi dei residui del modello di regressione lineare
 lm.resid = residuals(lm)
@@ -200,6 +208,8 @@ kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
 kurtosi
 shapiro.test(lm.resid)
 
+linearModel = lm
+
 ################################################################################
 ####################        REGRESSIONE ESPONENZIALE        ####################
 ################################################################################
@@ -224,6 +234,7 @@ summary(lm.4)
 r[4,]= c(summary(lm.4)$r.squared, summary(lm.4)$adj.r.squared)
 
 # traccio il grafico di comparazione degli R^2 e R^2 corretti
+par(mfrow=c(1, 1))
 ymin = min(r)
 ymax = max(r)
 r_squared <- expression(R^2)
@@ -237,6 +248,10 @@ legend(3.53, 0.8496, legend=c(r_squared, r_squared_adj), col=c("red", "blue"), l
 # modello di regressione esponenziale scelto
 lm = lm.3
 summary(lm)
+
+# scatterplot 3d del modello di regressione esponenziale
+s3d<-scatterplot3d(log(data$Rpeak), log(data$TotalCores), log(data$Rmax) , main="Scatterplot 3D Modello di Regressione Esponenziale", pch=16, highlight.3d=TRUE, type="p", grid = T, xlab = "log(Rpeak)", ylab = "log(TotalCores)", zlab = "log(Rmax)")
+s3d$plane3d(lm, draw_lines = F, draw_polygon = F)
 
 # analisi dei residui del modello di regressione esponenziale
 lm.resid = residuals(lm)
@@ -317,6 +332,17 @@ kurtosi = mean(((lm.resid - mean(lm.resid)) / sd(lm.resid))^4) - 3
 kurtosi
 shapiro.test(lm.resid)
 
+exponentialModel = lm
+
 ################################################################################
 ####################               PREDIZIONE               ####################
 ################################################################################
+
+# comparazione scatterplot 3d dei due modelli ottenuti
+par(mfrow=c(1, 2))
+# scatterplot 3d del modello di regressione lineare
+s3d<-scatterplot3d(data$Rpeak, data$TotalCores , data$Rmax , main="Regressione Lineare", pch=16, highlight.3d=TRUE, type="p", grid = T, xlab = "Rpeak", ylab = "TotalCores", zlab = "Rmax")
+s3d$plane3d(linearModel, draw_lines = F, draw_polygon = F)
+# scatterplot 3d del modello di regressione esponenziale
+s3d<-scatterplot3d(log(data$Rpeak), log(data$TotalCores), log(data$Rmax) , main="Regressione Esponenziale", pch=16, highlight.3d=TRUE, type="p", grid = T, xlab = "log(Rpeak)", ylab = "log(TotalCores)", zlab = "log(Rmax)")
+s3d$plane3d(exponentialModel, draw_lines = F, draw_polygon = F)

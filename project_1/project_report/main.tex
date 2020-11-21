@@ -99,17 +99,17 @@ importazione in R. Il file originale, in formato \texttt{.xlsx}, \`e stato
 per\`o convertito in \texttt{.csv} per facilitare l'importazione.\\
 Prima di iniziare l'analisi, ho rimosso le colonne che ritengo che non
 influenzano le prestazioni di un Supercomputer ("Name", "Manufacturer",
-"Country", "Year" ecc\dots), mentre come fattore di
+"Country", "Year", ecc\dots), mentre come fattore di
 uscita per la predizione utilizzer\`o il valore della colonna "Rmax".\\
-Nelle colonne rimanenti, ci sono $351$ valori mancanti in
+Nelle colonne che ho scelto, ho rilevato $351$ valori mancanti in
 "Accelerator/Co-Processor Cores", $426$ in "HPCG [TFlop/s]" e $310$ in
 "Power [kW]". Dato che il numero di valori mancanti \`e elevato rispetto al
 totale delle $500$ osservazioni, le suddette colonne sono state eliminate.
 \begin{wrapfigure}{l}{1\textwidth}
-	\vspace{-0.5cm}
+	\vspace{-0.6cm}
 	\centering
 	\includegraphics[scale=0.7]{imgs/plot(data).pdf}
-	\vspace{-0.4cm}
+	\vspace{-0.5cm}
 	\caption{Diagramma di dispersione}
 \end{wrapfigure}
 \clearpage
@@ -383,8 +383,26 @@ del Test di Shapiro-Wilk, che comunque \`e migliorato aumentando di un ordine di
 grandezza rispetto ai residui del modello di regressione lineare, rimane
 comunque ancora basso. Dobbiamo infatti tenere a mente che questo migliorando
 dei risultati del Test di Shapiro-Wilk lo stiamo pagando in termini del valore
-di $\boldsymbol{R^2}$ che \`e passato, lo ricordiamo, da $96\%$ a $82\%$.
+di $\boldsymbol{R^2}$ che \`e passato, lo ricordiamo, da $96\%$ a $82\%$. A
+questo punto, per esprimere un giudizio finale definitivo, comparer\`o i due
+modelli in fase di predizione.
 \section{Predizioni}
+Dato che, al termine del processo di eliminazione dei fattori, ho ottenuto un
+modello, sia nel caso lineare che nel caso esponenziale, con due predittori e un
+fattore di uscita, ho pensato di rappresentare entrambi i modelli tramite una
+grafico di dispersione 3D:
+\vspace{-0.5cm}
+\begin{figure}[H]
+	\begin{center}
+		\hspace*{-2.7cm}
+		\includegraphics[scale=0.7]{imgs/scatterplot_3d.pdf}
+		\vspace{-1cm}
+	\end{center}
+\end{figure}
+\noindent
+Ritengo che sia utile dato che ci mostra in maniera visiva quanto abbiamo
+concluso nelle fasi precedenti della nostra analisi: il modello esponenziale \`e
+meno affetto dalla presenza degli outliers contenuti nella tabella originale.
 
 \section{Conclusioni}
 
