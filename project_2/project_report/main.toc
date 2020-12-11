@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}Introduzione}{1}{section.1}
+\contentsline {section}{\numberline {2}Dati}{1}{section.2}
+\contentsline {subsection}{\numberline {2.1}Contenuto della tabella}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Importazione e pulizia}{2}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Esplorazione e comprensione dei dati}{3}{subsection.2.3}
+\contentsline {section}{\numberline {3}Analisi}{3}{section.3}
+\contentsline {subsection}{\numberline {3.1}Modello di Regressione Lineare}{3}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Analisi dei Residui}{3}{subsubsection.3.1.1}
+\contentsline {subsection}{\numberline {3.2}Modello di Regressione Logaritmico}{5}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Analisi dei Residui}{6}{subsubsection.3.2.1}
+\contentsline {section}{\numberline {4}Predizione e autovalutazione}{7}{section.4}
+\contentsline {section}{\numberline {5}Conclusioni}{9}{section.5}
