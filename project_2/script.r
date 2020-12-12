@@ -97,9 +97,6 @@ data <- na.omit(data)
 data$Site <- as.numeric(data$Site)
 data$Manufacturer <- as.numeric(data$Manufacturer)
 data$Country <- as.numeric(data$Country)
-# salviamo la colonna dei fattori Segment per utilizzarla più avanti
-Segments = data$Segment
-#data$Segment <- as.numeric(data$Segment)
 data$Architecture <- as.numeric(data$Architecture)
 data$Processor <- as.numeric(data$Processor)
 data$ProcessorTechnology <- as.numeric(data$ProcessorTechnology)
@@ -122,7 +119,7 @@ lda.values = predict(lda)
 plot(lda.values$x, pch=20, col = data$Segment)
 legend("bottomright",
        inset = 0.02,
-       levels(Segments),
+       levels(data$Segment),
        col = c("black", "red", "green3", "blue", "cyan", "magenta"),
        pch = 19,
        bg = "gray")
@@ -142,7 +139,7 @@ sum(data$Segment != lda.values$class)/length(data$Segment)
 # del 26.67%
 
 # visualizziamo la matrice di confusione
-confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
+confusionMatrix(as.factor(lda.values$class), as.factor(data$Segment))
 
 # non è stata effettuata alcuna suddivisione dei dati in training set e test
 # set, e si ottengono risultati non soddisfacenti inferiori all'80% di
@@ -159,6 +156,10 @@ qda = qda(Segment~., data=data)
 # The problem seems to be that you have more variables (columns) than the
 # smallest of your classes. You need to reduce the number of variables or use a
 # LDA instead.
+
+# salviamo la colonna dei fattori Segment per utilizzarla più avanti
+Segments = data$Segment
+data$Segment <- as.numeric(data$Segment)
 
 ################################################################################
 #####################                  PCA                 #####################
@@ -192,11 +193,13 @@ sum(data.pca$Segment != lda.values$class)/length(data$Segment)
 pca = princomp(scale(data))
 summary(pca)
 loadings(pca)
+
+# biplot
 ggbiplot(pca, choices = c(10,7))
 
 plot(cumsum(pca$sdev^2)/sum(pca$sdev^2), type="b", ylim=c(0,1),
-     ylab = "Varianza Spiegata", xlab = "Componenti Principali")
-segments(1, 0.8, 23, 0.8, col="red")
+     ylab = "Varianza Spiegata Cumulata", xlab = "Componenti Principali")
+segments(1, 0.8, 23, 0.8, col="red", lwd = 2)
 
 # il numero iniziale di fattori è certamente elevato, e da quanto riusciamo a
 # vedere dalle varianze cumulate del modello PCA, abbiamo bisogno di almeno le
@@ -209,9 +212,9 @@ segments(1, 0.8, 23, 0.8, col="red")
 # catturano la variabilità del fattore originale Segment: le componenti principali
 # che sono maggiormente correlate con Segment sono Comp.10, Comp.7, Comp.6,
 # Comp.8, Comp.12, Comp.11, Comp.15, Comp.1, Comp.17
-data.pca <- as.data.frame(pca$scores[,c(10, 7, 6, 8, 12, 11, 15)])
+data.pca <- as.data.frame(pca$scores[,c(10, 7, 6, 8, 12)])
 data.pca <- cbind(data.pca, Segments)
-colnames(data.pca)[8] <- "Segment"
+colnames(data.pca)[6] <- "Segment"
 
 ################################################################################
 ####################     ANALISI DISCRIMINANTE LINEARE     #####################
@@ -234,14 +237,14 @@ sum(data.pca$Segment == lda.values$class)
 sum(data.pca$Segment == lda.values$class)/length(data.pca$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 452 supercomputer su 495, accuratezza del 91.31%
+# 442 supercomputer su 495, accuratezza del 89.29%
 
 # valutiamo l’errore
 sum(data.pca$Segment != lda.values$class)
 sum(data.pca$Segment != lda.values$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 43 supercomputer su 495, errore
-# del 8.68%
+# vengono classificati erroneamente solamente 53 supercomputer su 495, errore
+# del 10.70%
 
 # visualizziamo la matrice di confusione
 confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
@@ -294,7 +297,8 @@ for(i in 1:30) {
 }
 mean(acc)
 sd(acc)
-hist(acc, 10)
+hist(acc, 10, main="Accuratezza della Classificazione per mezzo di LDA",
+     col = c("blue", "red", "gray", "green"), xlab = "Accuratezza")
 
 ################################################################################
 ####################   ANALISI DISCRIMINANTE QUADRATICA    #####################
@@ -314,7 +318,7 @@ qda.post = qda.values$posterior
 
 # visualizzazione grafica dei risultati della classificazione effettuata
 plot(qda.post, pch=20, col = data.pca$Segment)
-legend("bottomright",
+legend("topright",
        inset = 0.02,
        levels(Segments),
        col = c("black", "red", "green3", "blue", "cyan", "magenta"),
@@ -322,31 +326,31 @@ legend("bottomright",
        bg = "gray")
 
 # valutiamo l’accuratezza
-sum(data.pca$Segment == predict(qda)$class)
-sum(data.pca$Segment == predict(qda)$class)/length(data$Segment)
+sum(data.pca$Segment == qda.values$class)
+sum(data.pca$Segment == qda.values$class)/length(data$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
 # 458 supercomputer su 495, accuratezza del 92.52%
 
 # valutiamo l’errore
-sum(data.pca$Segment != predict(qda)$class)
-sum(data.pca$Segment != predict(qda)$class)/length(data$Segment)
+sum(data.pca$Segment != qda.values$class)
+sum(data.pca$Segment != qda.values$class)/length(data$Segment)
 
 # vengono classificati erroneamente solamente 37 supercomputer su 495, errore del
 # 7.47%
 
 # visualizziamo la matrice di confusione
-confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
+confusionMatrix(as.factor(qda.values$class), as.factor(Segments))
 
 # visualizziamo curva ROC multiclasse
-lda_plot_data <- as.data.frame(as.numeric(data.pca$Segment == "Academic"))
-lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Government"))
-lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Industry"))
-lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Others"))
-lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Research"))
-lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Vendor"))
-lda_plot_data <- cbind(lda_plot_data, qda.post)
-colnames(lda_plot_data) <- c("Academic_true",
+qda_plot_data <- as.data.frame(as.numeric(data.pca$Segment == "Academic"))
+qda_plot_data <- cbind(qda_plot_data, as.numeric(data.pca$Segment == "Government"))
+qda_plot_data <- cbind(qda_plot_data, as.numeric(data.pca$Segment == "Industry"))
+qda_plot_data <- cbind(qda_plot_data, as.numeric(data.pca$Segment == "Others"))
+qda_plot_data <- cbind(qda_plot_data, as.numeric(data.pca$Segment == "Research"))
+qda_plot_data <- cbind(qda_plot_data, as.numeric(data.pca$Segment == "Vendor"))
+qda_plot_data <- cbind(qda_plot_data, qda.post)
+colnames(qda_plot_data) <- c("Academic_true",
                              "Government_true",
                              "Industry_true",
                              "Others_true",
@@ -359,7 +363,7 @@ colnames(lda_plot_data) <- c("Academic_true",
                              "Research_pred_QDA",
                              "Vendor_pred_QDA")
 
-roc_res <- multi_roc(lda_plot_data)
+roc_res <- multi_roc(qda_plot_data)
 roc_res_df <- plot_roc_data(roc_res)
 
 ggplot(roc_res_df, aes(x = 1-Specificity, y=Sensitivity)) +
@@ -386,7 +390,8 @@ for(i in 1:30) {
 }
 mean(acc)
 sd(acc)
-hist(acc, 10)
+hist(acc, 10, main="Accuratezza della Classificazione per mezzo di QDA",
+     col = c("blue", "red", "gray", "green"), xlab = "Accuratezza")
 
 ################################################################################
 #####################         REGRESSIONE LOGISTICA        #####################

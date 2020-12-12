@@ -124,13 +124,13 @@ preliminari classificazioni ottenendo i seguenti risultati:
 Confusion Matrix and Statistics
 
               Reference
-Prediction    Academic   Government   Industry Others Research Vendor
-  Academic          42            2          8      0       22      2
-  Government         4           16          1      0        2      0
-  Industry           5            6        245     11       17      0
-  Others             0            0          7      2        1      0
-  Research          15           10          8      1       53      1
-  Vendor             1            0          4      0        4      5
+Prediction    Academic  Government  Industry  Others  Research  Vendor
+  Academic          42           2         8       0        22       2
+  Government         4          16         1       0         2       0
+  Industry           5           6       245      11        17       0
+  Others             0           0         7       2         1       0
+  Research          15          10         8       1        53       1
+  Vendor             1           0         4       0         4       5
 
 Overall Statistics
                Accuracy : 0.7333
@@ -148,11 +148,99 @@ Error in qda.default(x, grouping, ...) :
 Una prima analisi delle componenti principali, non prendendo in considerazione
 la classe delle osservazioni, nonostante ci permetta di ridurre il numero di
 fattori presi in considerazione, porta a risultati persino peggiori:
-l'accuratezza scende al $68\%$. Ho quindi valutato un secondo modello di PCA
-dove ho preso in considerazione anche la classe delle osservazioni.
+l'accuratezza della classificazione per mezzo di LDA scende al $68\%$. Ho quindi
+valutato un secondo modello di PCA dove ho preso in considerazione anche la
+classe delle osservazioni.
+\begin{figure}[H]
+	\hspace{-3.40cm}
+	\begin{minipage}{0.73\textwidth}
+		\includegraphics[scale=.45]{imgs/ggbiplot.pdf}
+	\end{minipage}
+	\begin{minipage}{0.5\textwidth}
+		\includegraphics[scale=.38]{imgs/cumulative_variance.pdf}
+	\end{minipage}
+\end{figure}
+\noindent Nonostante non \`e certamente un problema che definiremmo "passibile
+di riduzione", possiamo notare che con un numero di fattori pari a $10$
+catturiamo circa l'$85\%$ della struttura. Meno della met\`a quindi del numero
+di fattori iniziale. \`E certamente un miglioramento. Ho identificato le
+componenti principali che meglio catturavano la varianza del fattore originario
+"Segment". Con questo nuovo insieme di fattori, la dimensione di analisi del
+problema \`e diminuita dall'iniziale $22$ a $5$. Sono quindi stati valutati a
+questo punto un modello di classificazione per mezzo di Analisi Discriminante
+Lineare, uno di classificazione per mezzo di Analisi Discriminante Quadratica e
+uno di classificazione per mezzo di Regressione Logistica. I risultati ottenuti
+sono esposti nelle sezioni a seguire.
 \subsection{Classificazione per mezzo di Analisi Discriminante Lineare}
+Sono stati utilizzati $5$ fattori ottenendo un'accuratezza di classificazione
+pari a circa $89\%$. Per ottenere risultati statisticamente significativi
+l'esperimento \`e stato ripetuto $30$ volte ottenendo una precisione media
+dell'$85.55\%$ e una deviazione standard del $6.57\%$.
+\begin{figure}[H]
+	\hspace{-2.5cm}
+	\includegraphics[scale=.75]{imgs/LDA_plot.pdf}
+\end{figure}
+\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+Confusion Matrix and Statistics
+
+             Reference
+Prediction    Academic  Government  Industry  Others  Research  Vendor
+  Academic          65           4         0       0         2       0
+  Government         2           9         2       0         0       0
+  Industry           0          21       271       0         6       0
+  Others             0           0         0       8         6       0
+  Research           0           0         0       6        82       1
+  Vendor             0           0         0       0         3       7
+
+Overall Statistics
+               Accuracy : 0.8929          
+\end{lstlisting}
+\begin{figure}[H]
+	\hspace{-2.5cm}
+	\includegraphics[scale=.75]{imgs/LDA_ggplot.pdf}
+\end{figure}
+\begin{figure}[H]
+	\hspace{-2.5cm}
+	\includegraphics[scale=.75]{imgs/LDA_hist.pdf}
+\end{figure}
 \subsection{Classificazione per mezzo di Analisi Discriminante Quadratica}
+Sono stati utilizzati $5$ fattori ottenendo un'accuratezza di classificazione
+pari a circa $89\%$. Per ottenere risultati statisticamente significativi
+l'esperimento \`e stato ripetuto $30$ volte ottenendo una precisione media
+dell'$88.33\%$ e una deviazione standard del $5.85\%$.
+\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+ Confusion Matrix and Statistics
+
+             Reference
+Prediction    Academic  Government  Industry  Others  Research  Vendor
+  Academic          64           3         0       0         0       0
+  Government         3          21         1       0         0       0
+  Industry           0          10       262       0         1       0
+  Others             0           0         0      12         1       0
+  Research           0           0        10       2        94       3
+  Vendor             0           0         0       0         3       5
+
+Overall Statistics
+               Accuracy : 0.9253
+\end{lstlisting}
+\begin{figure}[H]
+	\hspace{-2.5cm}
+	\includegraphics[scale=.75]{imgs/QDA_ggplot.pdf}
+\end{figure}
+\begin{figure}[H]
+	\hspace{-2.5cm}
+	\includegraphics[scale=.75]{imgs/QDA_hist.pdf}
+\end{figure}
+
 \subsection{Classificazione per mezzo di Regressione Logistica}
+Sono stati utilizzati $5$ fattori ottenendo un'accuratezza di classificazione
+pari a circa $69\%$: non \`e proprio soddisfacente rispetto ai precedenti due
+modelli analizzati.
+\begin{figure}[H]
+	\hspace{-2.5cm}
+	\includegraphics[scale=.75]{imgs/GLM_ggplot.pdf}
+\end{figure}
+
 \section{Conclusioni}
 In ultima analisi
 \end{document}
