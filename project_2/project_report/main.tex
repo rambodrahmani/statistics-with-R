@@ -46,8 +46,9 @@ e dalle prestazioni ottenute nei principali benchmarks utilizzati in questo
 settore.
 A partire dalla tabella dei dati, tramite l'utilizzo di R, a seguito di una
 preliminare analisi delle componenti principali, sono stati valutati un modello
-di classificazione discriminante lineare, uno di classificazione discriminante
-quadratica e uno di classificazione con la regressione logistica.\\
+di classificazione mediante analisi discriminante lineare, uno mediante analisi
+discriminante quadratica e uno di classificazione con la regressione
+logistica.\\
 \\
 Per quanto riguarda il contesto applicativo ipotizzato, possiamo immaginarci che
 un tale modello di classificazione possa essere utilizzato, al momento
@@ -82,8 +83,10 @@ Per la presente analisi ho utilizzato le seguenti colonne: \textbf{Site},
 \textbf{ProcessorTechnology}, \textbf{ProcessorSpeed}, \textbf{OperatingSystem},
 \textbf{CoProcessor}, \textbf{CoresPerSocket}, \textbf{ProcessorGeneration},
 \textbf{SystemModel}, \textbf{SystemFamily}, \textbf{InterconnectFamily},
-\textbf{Interconnect}, \textbf{Continent}. A parte le colonne di significato
-ovvio, penso sia doveroso fornire maggiori informazioni i seguenti fattori:
+\textbf{Interconnect}, \textbf{Continent}. Molti di questi fattori sono di tipo
+categorico, quindi sono stati convertiti in numerici per non perdere
+l'informazione in essi contenuta. A parte le colonne di significato ovvio, penso
+sia doveroso fornire maggiori informazioni riguardo i seguenti fattori:
 \begin{itemize}
 	\setlength\itemsep{0mm}
 	\item \textbf{Rmax [TFlop/s]}: massime prestazioni raggiunte nel
@@ -98,11 +101,11 @@ ovvio, penso sia doveroso fornire maggiori informazioni i seguenti fattori:
 Sui dati, non \`e stata effettuata alcuna operazione precedente la loro
 importazione in R. Il file originale, in formato \texttt{.xlsx}, \`e stato
 per\`o convertito in \texttt{.csv} per facilitare l'importazione.\\
-Prima di iniziare l'analisi, ho rimosso le colonne che ritengo che non
-influenzano la classificazione del segmento di mercato di un Supercomputer
-(Rank TOP500, "Name", "Computer", "Power.Source", "OS.Family", ecc\dots), mentre
-come fattore per la classificazione \`e stato utilizzato il valore della colonna
-"Segment".
+Prima di iniziare l'analisi, ho rimosso le colonne che ritengo non influenzino
+la classificazione del segmento di mercato di un Supercomputer oppure con valore
+costante per tutte le osservazioni (Rank TOP500, "Name", "Computer",
+"Power.Source", "OS.Family", ecc\dots), mentre come fattore di uscita per la
+classificazione \`e stato utilizzato il valore della colonna "\textbf{Segment}".
 \begin{lstlisting}[language=bash,basicstyle=\footnotesize,tabsize=2,frame = single]
 > with(data, table(Segment))
 Segment
@@ -141,16 +144,16 @@ Overall Statistics
 Error in qda.default(x, grouping, ...) : 
   some group is too small for 'qda'
 	\end{lstlisting}
-		Una analisi delle componenti principali per ridurre la
-		dimensione del problema si rivela quindi inevitabile.
 \end{itemize}
+Una analisi delle componenti principali per ridurre la dimensione del problema
+si rivela quindi inevitabile.
 \subsection{Preliminare analisi delle Componenti Principali}
-Una prima analisi delle componenti principali, non prendendo in considerazione
-la classe delle osservazioni, nonostante ci permetta di ridurre il numero di
-fattori presi in considerazione, porta a risultati persino peggiori:
-l'accuratezza della classificazione per mezzo di LDA scende al $68\%$. Ho quindi
-valutato un secondo modello di PCA dove ho preso in considerazione anche la
-classe delle osservazioni.
+Una prima analisi delle componenti principali, \textbf{non prendendo in
+considerazione la classe delle osservazioni}, nonostante ci permetta di ridurre
+il numero di fattori presi in considerazione, \textbf{porta a risultati persino
+peggiori}: l'accuratezza della classificazione per mezzo di LDA scende al
+$68\%$. Ho quindi valutato un secondo modello di PCA dove ho preso in
+considerazione anche la classe delle osservazioni.
 \begin{figure}[H]
 	\hspace{-3.40cm}
 	\begin{minipage}{0.73\textwidth}
@@ -160,27 +163,32 @@ classe delle osservazioni.
 		\includegraphics[scale=.38]{imgs/cumulative_variance.pdf}
 	\end{minipage}
 \end{figure}
-\noindent Nonostante non \`e certamente un problema che definiremmo "passibile
-di riduzione", possiamo notare che con un numero di fattori pari a $10$
-catturiamo circa l'$85\%$ della struttura. Meno della met\`a quindi del numero
-di fattori iniziale. \`E certamente un miglioramento. Ho identificato le
+\noindent Nonostante non si tratti certamente un problema che potremmo definire
+"passibile di riduzione", possiamo notare che con un numero di fattori pari a
+$10$ catturiamo circa l'$85\%$ della struttura. Meno della met\`a quindi del
+numero di fattori iniziali. \`E certamente un miglioramento. Ho identificato le
 componenti principali che meglio catturavano la varianza del fattore originario
-"Segment". Con questo nuovo insieme di fattori, la dimensione di analisi del
-problema \`e diminuita dall'iniziale $22$ a $5$. Sono quindi stati valutati a
-questo punto un modello di classificazione per mezzo di Analisi Discriminante
-Lineare, uno di classificazione per mezzo di Analisi Discriminante Quadratica e
-uno di classificazione per mezzo di Regressione Logistica. I risultati ottenuti
-sono esposti nelle sezioni a seguire.
+"Segment" analizzando gli allineamenti nel \textbf{biplot} e i coefficienti
+della \textbf{matrice dei loading}. Con questo nuovo insieme di fattori,
+\textbf{la dimensione di analisi del problema \`e diminuita dall'iniziale $22$ a
+$5$}. Sono quindi stati valutati a questo punto un modello di classificazione
+per mezzo di Analisi Discriminante Lineare, uno di classificazione per mezzo di
+Analisi Discriminante Quadratica e uno di classificazione per mezzo di
+Regressione Logistica. I risultati ottenuti sono esposti nelle sezioni a
+seguire.
 \subsection{Classificazione per mezzo di Analisi Discriminante Lineare}
-Sono stati utilizzati $5$ fattori ottenendo un'accuratezza di classificazione
-pari a circa $89\%$. Per ottenere risultati statisticamente significativi
-l'esperimento \`e stato ripetuto $30$ volte ottenendo una precisione media
-dell'$85.55\%$ e una deviazione standard del $6.57\%$.
+Sono stati utilizzati $5$ fattori ottenendo  un'accuratezza media dell'$85.55\%$
+e una deviazione standard del $6.57\%$. Per ottenere risultati statisticamente
+significativi l'esperimento \`e stato ripetuto $30$. Notiamo quindi un netto
+miglioramento rispetto all'analisi preliminare precedente la PCA.
 \begin{figure}[H]
-	\hspace{-2.5cm}
-	\includegraphics[scale=.75]{imgs/LDA_plot.pdf}
+	\vspace{-2.5cm}
+	\hspace{-0.8cm}
+	\includegraphics[scale=.61]{imgs/LDA_plot.pdf}
 \end{figure}
+\vspace{-0.6cm}
 \begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+> confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
 Confusion Matrix and Statistics
 
              Reference
@@ -196,20 +204,32 @@ Overall Statistics
                Accuracy : 0.8929          
 \end{lstlisting}
 \begin{figure}[H]
-	\hspace{-2.5cm}
-	\includegraphics[scale=.75]{imgs/LDA_ggplot.pdf}
+	\vspace{-0.1cm}
+	\hspace{-1.0cm}
+	\includegraphics[scale=.61]{imgs/LDA_ggplot.pdf}
 \end{figure}
+\clearpage
 \begin{figure}[H]
-	\hspace{-2.5cm}
-	\includegraphics[scale=.75]{imgs/LDA_hist.pdf}
+	\vspace{-2.0cm}
+	\hspace{-1.0cm}
+	\includegraphics[scale=.65]{imgs/LDA_hist.pdf}
 \end{figure}
 \subsection{Classificazione per mezzo di Analisi Discriminante Quadratica}
-Sono stati utilizzati $5$ fattori ottenendo un'accuratezza di classificazione
-pari a circa $89\%$. Per ottenere risultati statisticamente significativi
-l'esperimento \`e stato ripetuto $30$ volte ottenendo una precisione media
-dell'$88.33\%$ e una deviazione standard del $5.85\%$.
+Nell'analisi preliminare precedente alla PCA, non era stato possibile in alcun
+modo costruire un modello di Classificazione Multiclasse per mezzo di Analisi
+Discriminanete Quadratica dato che il numero di fattori era eccessivo rispetto
+al numero totale di osservazioni, e a causa di collinearit\`a tra i fattori che
+rendevono la matrice di Covarianza associata alla tabella singolare, non
+invertibile.\\
+\\
+Grazie alla riduzione dimensionale del problema invece, utilizzando questa volta
+$5$ fattori, si ottiene un modello di classificazione multiclasse con
+un'accuratezza media dell'$88.33\%$ e una deviazione standard del $5.85\%$.
+Per ottenere risultati statisticamente significativi l'esperimento \`e stato
+ripetuto $30$ volte.
 \begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
- Confusion Matrix and Statistics
+> confusionMatrix(as.factor(qda.values$class), as.factor(Segments))
+Confusion Matrix and Statistics
 
              Reference
 Prediction    Academic  Government  Industry  Others  Research  Vendor
@@ -223,24 +243,57 @@ Prediction    Academic  Government  Industry  Others  Research  Vendor
 Overall Statistics
                Accuracy : 0.9253
 \end{lstlisting}
+Utilizzando $5$ fattori con un totale di $500$ osservazioni possiamo affermare
+che l'analisi non \`e affetta da overfitting.
+\clearpage
 \begin{figure}[H]
-	\hspace{-2.5cm}
-	\includegraphics[scale=.75]{imgs/QDA_ggplot.pdf}
+	\vspace{-1.0cm}
+	\hspace{-0.5cm}
+	\includegraphics[scale=.60]{imgs/QDA_ggplot.pdf}
 \end{figure}
 \begin{figure}[H]
-	\hspace{-2.5cm}
-	\includegraphics[scale=.75]{imgs/QDA_hist.pdf}
+	\hspace{-0.5cm}
+	\includegraphics[scale=.6]{imgs/QDA_hist.pdf}
 \end{figure}
-
 \subsection{Classificazione per mezzo di Regressione Logistica}
+La costruzione di un modello di classificazione per mezzo di regressione
+ligistica, non trattandosi di una classificazione dicotomica, ha richiesto pi\`u
+lavoro. E i risultati ottenuti non sono stati per niente soddisfacenti, tanto da
+poter scartare questo modello senza ulteriori approfondimenti.\\
 Sono stati utilizzati $5$ fattori ottenendo un'accuratezza di classificazione
-pari a circa $69\%$: non \`e proprio soddisfacente rispetto ai precedenti due
-modelli analizzati.
+pari a circa $69\%$.
 \begin{figure}[H]
-	\hspace{-2.5cm}
-	\includegraphics[scale=.75]{imgs/GLM_ggplot.pdf}
+	\hspace{-0.5cm}
+	\includegraphics[scale=.60]{imgs/GLM_ggplot.pdf}
 \end{figure}
 
 \section{Conclusioni}
-In ultima analisi
+In ultima analisi, scartando il modello di classificazione per mezzo regressione
+logistica, che fa poco meglio del lancio di una moneta, per quanto riguarda i
+due restati modelli che abbiamo analizzato, in fase di analisi ho notato che
+effettuando un scelta \textit{ad-hoc} delle componenti principali, differente
+quindi tra LDA e QDA, si ottiene una capacit\`a predittiva maggiore per entrambi
+i modelli superiore al $95\%$. Ottenere questi risultati comporta anche
+aumentare il numero di componenti (anche se di poco, uno o due componenti
+massimo) principali utilizzate. Per mantenere l'analisi il pi\`u coerente
+possibile e per ottenere risultati il pi\`u possibile comparabili, ho utilizzato
+per tutti i modelli valutati lo stesso insieme di componenti principali
+della PCA.\\
+\\
+Analizzando con pi\`u attenzione la matrice di confusione dei due modelli, ci
+rendiamo conto che entrambi sbagliano nel classificare
+\begin{itemize}
+	\item osservazioni che fanno parte di classi per le quali si ha un
+		elevato numero di campioni;
+	\item osservazioni che fanno parte di classi per le quali si ha un
+		ridotto numero di campioni;
+\end{itemize}
+L'interpretazione che ho dato a questo fenomeno \`e che stiamo utilizzando un
+numero di fattori molto pi\`u piccolo rispetto a quello originale. Ricordiamoci
+infatti che la tabella originale conteneva $37$ colonne e che i modelli che
+abbiamo analizzato noi utilizzano solamente $5$ fattori. Evidentemente quindi,
+l'errore non \`e dovuto solamente a una scarsit\`a o abbondanza di campioni per
+la particolare classe analizzata, ma anche a qualche fattore mancante che
+porterebbe certamente ad una maggiore proporzione di varianza spiegata della
+struttura delle osservazioni originarie.
 \end{document}

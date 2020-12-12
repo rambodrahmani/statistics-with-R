@@ -224,7 +224,7 @@ plot(lda, col = 1 + as.numeric(data.pca$Segment))
 
 # visualizzazione grafica dei risultati della classificazione effettuata
 lda.values = predict(lda)
-plot(lda.values$x, pch=20, col = data.pca$Segment)
+plot(lda.values$x, pch=20, col = data.pca$Segment, main = "Classificazione Multiclasse tramite Analisi Driscriminante Lineare")
 legend("bottomright",
        inset = 0.02,
        levels(Segments),
@@ -274,15 +274,14 @@ roc_res <- multi_roc(lda_plot_data)
 roc_res_df <- plot_roc_data(roc_res)
 
 ggplot(roc_res_df, aes(x = 1-Specificity, y=Sensitivity)) +
+  ggtitle("Curva ROC Classificazione Multiclasse tramite Analisi Driscriminante Lineare") +
   geom_path(aes(color = Group, linetype=Method), size=1.5) +
-  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), 
-               colour='grey', linetype = 'dotdash') +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), colour='grey', linetype = 'dotdash') +
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5), 
         legend.justification=c(1, 0), legend.position=c(.95, .05),
         legend.title=element_blank(), 
-        legend.background = element_rect(fill=NULL, size=0.5, 
-                                         linetype="solid", colour ="black"))
+        legend.background = element_rect(fill=NULL, size=0.5, linetype="solid", colour ="black"))
 
 # Autovaluazione Analisi Discriminante Lineare
 acc = rep(0, 30)
