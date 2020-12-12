@@ -99,7 +99,7 @@ data$Manufacturer <- as.numeric(data$Manufacturer)
 data$Country <- as.numeric(data$Country)
 # salviamo la colonna dei fattori Segment per utilizzarla più avanti
 Segments = data$Segment
-data$Segment <- as.numeric(data$Segment)
+#data$Segment <- as.numeric(data$Segment)
 data$Architecture <- as.numeric(data$Architecture)
 data$Processor <- as.numeric(data$Processor)
 data$ProcessorTechnology <- as.numeric(data$ProcessorTechnology)
@@ -132,14 +132,17 @@ sum(data$Segment == lda.values$class)
 sum(data$Segment == lda.values$class)/length(data$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 363 supercomputer su 500, accuratezza del 73.33%
+# 363 supercomputer su 495, accuratezza del 73.33%
 
 # valutiamo l’errore
 sum(data$Segment != lda.values$class)
 sum(data$Segment != lda.values$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 132 supercomputer su 500, errore
+# vengono classificati erroneamente solamente 132 supercomputer su 495, errore
 # del 26.67%
+
+# visualizziamo la matrice di confusione
+confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
 
 # non è stata effettuata alcuna suddivisione dei dati in training set e test
 # set, e si ottengono risultati non soddisfacenti inferiori all'80% di
@@ -147,7 +150,7 @@ sum(data$Segment != lda.values$class)/length(data$Segment)
 # il numero di fattori in gioco e, soprattutto, catturare quelle componenti
 # che meglio descrivono il fattore Segment
 
-# modello per analisi discriminante quadratica
+# costruzione modello QDA preliminare
 qda = qda(Segment~., data=data)
 
 # Error in qda.default(x, grouping, ...) : 
@@ -182,7 +185,7 @@ sum(data.pca$Segment != lda.values$class)
 sum(data.pca$Segment != lda.values$class)/length(data$Segment)
 # senza usare l'informazione sulla classe otteniamo informazioni anche peggiori
 # rispetto al modello LDA originario di partenza: 337 classificazioni corrette
-# su 500, accuratezza del 68.08%, e margine di errore pari a 158 su 500, in
+# su 495, accuratezza del 68.08%, e margine di errore pari a 158 su 495, in
 # percentuale 31.91%
 
 # secondo modello PCA utilizzando l'informazione sulla classe
@@ -231,13 +234,13 @@ sum(data.pca$Segment == lda.values$class)
 sum(data.pca$Segment == lda.values$class)/length(data.pca$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 452 supercomputer su 500, accuratezza del 91.31%
+# 452 supercomputer su 495, accuratezza del 91.31%
 
 # valutiamo l’errore
 sum(data.pca$Segment != lda.values$class)
 sum(data.pca$Segment != lda.values$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 43 supercomputer su 500, errore
+# vengono classificati erroneamente solamente 43 supercomputer su 495, errore
 # del 8.68%
 
 # visualizziamo la matrice di confusione
@@ -323,13 +326,13 @@ sum(data.pca$Segment == predict(qda)$class)
 sum(data.pca$Segment == predict(qda)$class)/length(data$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 458 supercomputer su 500, accuratezza del 92.52%
+# 458 supercomputer su 495, accuratezza del 92.52%
 
 # valutiamo l’errore
 sum(data.pca$Segment != predict(qda)$class)
 sum(data.pca$Segment != predict(qda)$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 37 supercomputer su 500, errore del
+# vengono classificati erroneamente solamente 37 supercomputer su 495, errore del
 # 7.47%
 
 # visualizziamo la matrice di confusione
