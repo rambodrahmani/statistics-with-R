@@ -146,24 +146,51 @@ qda = qda(Segment~., data=data)
 ################################################################################
 #####################                  PCA                 #####################
 ################################################################################
+
+# primo modello PCA senza usare l'informazione sulla classe
+pca = princomp(scale(subset(data, select=-Segment)))
+data.pca<-as.data.frame(pca$scores[,1:10])
+data.pca<-cbind(data.pca, data$Segment)
+colnames(data.pca)[11] <- "Segment"
+lda = lda(Segment~., data=data.pca)
+plot(lda, col = 1 + as.numeric(data.pca$Segment))
+lda.values=predict(lda)
+plot(lda.values$x, pch=20, col = as.numeric(data.pca$Segment)+1)
+sum(data$Segment == lda.values$class)
+sum(data$Segment == lda.values$class)/length(data.pca$Segment)
+sum(data$Segment != lda.values$class)
+sum(data$Segment != lda.values$class)/length(data$Segment)
+# senza usare l'informazione sulla classe otteniamo informazioni anche peggiori
+# rispetto al modello LDA originario di partenza: 337 classificazioni corrette
+# su 500, accuratezza del 68.08%, e margine di errore pari a 158 su 500, in
+# percentuale 31.91%
+
+# secondo modello PCA utilizzando l'informazione sulla classe
 pca = princomp(scale(data))
 summary(pca)
-biplot(pca, col = c("gray", "red"))
 loadings(pca)
-ggbiplot(pca)
+ggbiplot(pca, choices = c(1,2))
 
-plot(cumsum(pca$sdev^2)/sum(pca$sdev^2), type="b", ylim=c(0,1))
+plot(cumsum(pca$sdev^2)/sum(pca$sdev^2), type="b", ylim=c(0,1),
+     ylab = "Varianza Spiegata", xlab = "Componenti Principali")
 segments(1, 0.8, 23, 0.8, col="red")
+
+# il numero iniziale di fattori è certamente elevato, e da quanto riusciamo a
+# vedere dalle varianze cumulate del modello PCA, abbiamo bisogno di almeno le
+# prime 10 componenti principali per catturare un buon 84% della struttura
+# originale, questo risultato non è fantastico certamente ma comunque meglio
+# della situazione originale, la speranza è che così facendo la QDA sia almeno
+# possibile da eseguire e che la LDA ci fornisca risultati migliori
+
+# costruiamo il data frame con il minor numero di componenti che megglio
+# catturano la variabilità del fattore originale Segment
+data.pca<-as.data.frame(pca$scores[,c(1, 6, 7, 8, 10, 11, 12, 15, 17)])
+data.pca<-cbind(data.pca, data$Segment)
+colnames(data.pca)[10] <- "Segment"
 
 ################################################################################
 ####################     ANALISI DISCRIMINANTE LINEARE     #####################
 ################################################################################
-# costruiamo il data frame con le componenti che megglio catturano la
-# variabilità del fattore originale Segment
-data.pca<-as.data.frame(pca$scores[,1:10])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[11] <- "Segment"
-
 lda = lda(Segment~., data=data.pca)
 plot(lda, col = 1 + as.numeric(data.pca$Segment))
 
@@ -175,14 +202,14 @@ sum(data$Segment == lda.values$class)
 sum(data$Segment == lda.values$class)/length(data.pca$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 477 supercomputer su 500, accuratezza del 96.4%
+# 490 supercomputer su 500, accuratezza del 98.98%
 
 # valutiamo l’errore
 sum(data$Segment != lda.values$class)
 sum(data$Segment != lda.values$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 18 supercomputer su 500, errore
-# del 3.6%
+# vengono classificati erroneamente solamente 5 supercomputer su 500, errore
+# del 1.02%
 
 # Autovaluazione Analisi Discriminante Lineare
 acc = rep(0, 30)
@@ -203,10 +230,12 @@ hist(acc)
 ####################   ANALISI DISCRIMINANTE QUADRATICA    #####################
 ################################################################################
 
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:7])
+# costruiamo il data frame con le osservazioni secondo la PCA: non possiamo
+# usare più di fattori per evitare di avere l'errore ottenuto nel modello
+# originario di partenza
+data.pca<-as.data.frame(pca$scores[,c(1, 6, 7, 8, 10)])
 data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[8] <- "Segment"
+colnames(data.pca)[6] <- "Segment"
 
 # modello per analisi discriminante quadratica
 qda = qda(Segment~., data=data.pca)
@@ -226,15 +255,15 @@ sum(data$Segment != predict(qda)$class)/length(data$Segment)
 # 0.4%
 
 # Autovaluazione Analisi Discriminante Quadratica
-acc = rep(0, 1)
+acc = rep(0, 25)
 l = nrow(data)
 for(i in 1:30) {
-  idx = sample(l, 1)
+  idx = sample(l, 25)
   train = data.pca[-idx,]
   test = data.pca[idx,]
   train.qda = qda(Segment~., data=train)
   test.pt = predict(train.qda, newdata=test)$class
-  acc[i] = sum(test.pt == data$Segment[idx])/1
+  acc[i] = sum(test.pt == data$Segment[idx])/25
 }
 mean(acc)
 sd(acc)
