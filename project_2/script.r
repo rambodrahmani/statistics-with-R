@@ -8,6 +8,9 @@ library(caret)
 library(MASS)
 library(cluster)
 library(ggbiplot)
+library(pROC)
+require(multiROC)
+require(ggplot2)
 
 ################################################################################
 ####################    IMPORTAZIONE E PULIZIA DEI DATI    #####################
@@ -81,11 +84,21 @@ summary(data)
 str(data)
 with(data, table(Segment))
 
+# Segment
+#    Academic Government   Industry     Others   Research     Vendor 
+#          67         34        273         14        103          9
+
+# eliminiamo eventuali punti contenenti valori NA o NaN
+sum(is.na(data))
+data <- na.omit(data)
+
 # convertiamo i dati di tipo Factor in numeric in modo da non avere problemi in
 # seguito per i differenti tipi di analisi
 data$Site <- as.numeric(data$Site)
 data$Manufacturer <- as.numeric(data$Manufacturer)
 data$Country <- as.numeric(data$Country)
+# salviamo la colonna dei fattori Segment per utilizzarla più avanti
+Segments = data$Segment
 data$Segment <- as.numeric(data$Segment)
 data$Architecture <- as.numeric(data$Architecture)
 data$Processor <- as.numeric(data$Processor)
@@ -99,11 +112,6 @@ data$InterconnectFamily <- as.numeric(data$InterconnectFamily)
 data$Interconnect <- as.numeric(data$Interconnect)
 data$Continent <- as.numeric(data$Continent)
 
-# eliminiamo eventuali NA, NaN generati durante la conversione dal tipo Factor
-# al tipo numeric
-sum(is.na(data))
-data<-na.omit(data)
-
 # controlliamo la nuova struttura dei dati
 str(data)
 
@@ -111,9 +119,15 @@ str(data)
 lda = lda(Segment~., data=data)
 plot(lda, col = 1 + as.numeric(data$Segment))
 lda.values = predict(lda)
-plot(lda.values$x, pch=20, col = as.numeric(data$Segment)+1)
+plot(lda.values$x, pch=20, col = data$Segment)
+legend("bottomright",
+       inset = 0.02,
+       levels(Segments),
+       col = c("black", "red", "green3", "blue", "cyan", "magenta"),
+       pch = 19,
+       bg = "gray")
 
-# valutiamo l’accuratezza
+# valutiamo l’accuratezza del modello LDA preliminare
 sum(data$Segment == lda.values$class)
 sum(data$Segment == lda.values$class)/length(data$Segment)
 
@@ -149,17 +163,23 @@ qda = qda(Segment~., data=data)
 
 # primo modello PCA senza usare l'informazione sulla classe
 pca = princomp(scale(subset(data, select=-Segment)))
-data.pca<-as.data.frame(pca$scores[,1:10])
-data.pca<-cbind(data.pca, data$Segment)
+data.pca <- as.data.frame(pca$scores[,1:10])
+data.pca <- cbind(data.pca, Segments)
 colnames(data.pca)[11] <- "Segment"
 lda = lda(Segment~., data=data.pca)
 plot(lda, col = 1 + as.numeric(data.pca$Segment))
 lda.values=predict(lda)
 plot(lda.values$x, pch=20, col = as.numeric(data.pca$Segment)+1)
-sum(data$Segment == lda.values$class)
-sum(data$Segment == lda.values$class)/length(data.pca$Segment)
-sum(data$Segment != lda.values$class)
-sum(data$Segment != lda.values$class)/length(data$Segment)
+legend("bottomright",
+       inset = 0.02,
+       levels(Segments),
+       col = c("black", "red", "green3", "blue", "cyan", "magenta"),
+       pch = 19,
+       bg = "gray")
+sum(data.pca$Segment == lda.values$class)
+sum(data.pca$Segment == lda.values$class)/length(data.pca$Segment)
+sum(data.pca$Segment != lda.values$class)
+sum(data.pca$Segment != lda.values$class)/length(data$Segment)
 # senza usare l'informazione sulla classe otteniamo informazioni anche peggiori
 # rispetto al modello LDA originario di partenza: 337 classificazioni corrette
 # su 500, accuratezza del 68.08%, e margine di errore pari a 158 su 500, in
@@ -169,7 +189,7 @@ sum(data$Segment != lda.values$class)/length(data$Segment)
 pca = princomp(scale(data))
 summary(pca)
 loadings(pca)
-ggbiplot(pca, choices = c(1,2))
+ggbiplot(pca, choices = c(10,7))
 
 plot(cumsum(pca$sdev^2)/sum(pca$sdev^2), type="b", ylim=c(0,1),
      ylab = "Varianza Spiegata", xlab = "Componenti Principali")
@@ -183,10 +203,12 @@ segments(1, 0.8, 23, 0.8, col="red")
 # possibile da eseguire e che la LDA ci fornisca risultati migliori
 
 # costruiamo il data frame con il minor numero di componenti che megglio
-# catturano la variabilità del fattore originale Segment
-data.pca<-as.data.frame(pca$scores[,c(1, 6, 7, 8, 10, 11, 12, 15, 17)])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[10] <- "Segment"
+# catturano la variabilità del fattore originale Segment: le componenti principali
+# che sono maggiormente correlate con Segment sono Comp.10, Comp.7, Comp.6,
+# Comp.8, Comp.12, Comp.11, Comp.15, Comp.1, Comp.17
+data.pca <- as.data.frame(pca$scores[,c(10, 7, 6, 8, 12, 11, 15)])
+data.pca <- cbind(data.pca, Segments)
+colnames(data.pca)[8] <- "Segment"
 
 ################################################################################
 ####################     ANALISI DISCRIMINANTE LINEARE     #####################
@@ -194,22 +216,67 @@ colnames(data.pca)[10] <- "Segment"
 lda = lda(Segment~., data=data.pca)
 plot(lda, col = 1 + as.numeric(data.pca$Segment))
 
-lda.values=predict(lda)
-plot(lda.values$x, pch=20, col = as.numeric(data.pca$Segment)+1)
+# visualizzazione grafica dei risultati della classificazione effettuata
+lda.values = predict(lda)
+plot(lda.values$x, pch=20, col = data.pca$Segment)
+legend("bottomright",
+       inset = 0.02,
+       levels(Segments),
+       col = c("black", "red", "green3", "blue", "cyan", "magenta"),
+       pch = 19,
+       bg = "gray")
 
 # valutiamo l’accuratezza
-sum(data$Segment == lda.values$class)
-sum(data$Segment == lda.values$class)/length(data.pca$Segment)
+sum(data.pca$Segment == lda.values$class)
+sum(data.pca$Segment == lda.values$class)/length(data.pca$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 490 supercomputer su 500, accuratezza del 98.98%
+# 452 supercomputer su 500, accuratezza del 91.31%
 
 # valutiamo l’errore
-sum(data$Segment != lda.values$class)
-sum(data$Segment != lda.values$class)/length(data$Segment)
+sum(data.pca$Segment != lda.values$class)
+sum(data.pca$Segment != lda.values$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 5 supercomputer su 500, errore
-# del 1.02%
+# vengono classificati erroneamente solamente 43 supercomputer su 500, errore
+# del 8.68%
+
+# visualizziamo la matrice di confusione
+confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
+
+# visualizziamo curva ROC multiclasse
+lda_plot_data <- as.data.frame(as.numeric(data.pca$Segment == "Academic"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Government"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Industry"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Others"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Research"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Vendor"))
+lda_plot_data <- cbind(lda_plot_data, lda.values$posterior)
+colnames(lda_plot_data) <- c("Academic_true",
+                             "Government_true",
+                             "Industry_true",
+                             "Others_true",
+                             "Research_true",
+                             "Vendor_true",
+                             "Academic_pred_LDA",
+                             "Government_pred_LDA",
+                             "Industry_pred_LDA",
+                             "Others_pred_LDA",
+                             "Research_pred_LDA",
+                             "Vendor_pred_LDA")
+
+roc_res <- multi_roc(lda_plot_data)
+roc_res_df <- plot_roc_data(roc_res)
+
+ggplot(roc_res_df, aes(x = 1-Specificity, y=Sensitivity)) +
+  geom_path(aes(color = Group, linetype=Method), size=1.5) +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), 
+               colour='grey', linetype = 'dotdash') +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.justification=c(1, 0), legend.position=c(.95, .05),
+        legend.title=element_blank(), 
+        legend.background = element_rect(fill=NULL, size=0.5, 
+                                         linetype="solid", colour ="black"))
 
 # Autovaluazione Analisi Discriminante Lineare
 acc = rep(0, 30)
@@ -220,11 +287,11 @@ for(i in 1:30) {
   test = data.pca[idx,]
   train.lda = lda(Segment~., data=train)
   test.pt = predict(train.lda, newdata=test)$class
-  acc[i] = sum(test.pt == data$Segment[idx])/30
+  acc[i] = sum(test.pt == data.pca$Segment[idx])/30
 }
 mean(acc)
 sd(acc)
-hist(acc)
+hist(acc, 10)
 
 ################################################################################
 ####################   ANALISI DISCRIMINANTE QUADRATICA    #####################
@@ -233,108 +300,135 @@ hist(acc)
 # costruiamo il data frame con le osservazioni secondo la PCA: non possiamo
 # usare più di fattori per evitare di avere l'errore ottenuto nel modello
 # originario di partenza
-data.pca<-as.data.frame(pca$scores[,c(1, 6, 7, 8, 10)])
-data.pca<-cbind(data.pca, data$Segment)
+data.pca <- as.data.frame(pca$scores[,c(10, 7, 6, 8, 12)])
+data.pca <- cbind(data.pca, Segments)
 colnames(data.pca)[6] <- "Segment"
 
 # modello per analisi discriminante quadratica
 qda = qda(Segment~., data=data.pca)
+qda.values = predict(qda)
+qda.post = qda.values$posterior
+
+# visualizzazione grafica dei risultati della classificazione effettuata
+plot(qda.post, pch=20, col = data.pca$Segment)
+legend("bottomright",
+       inset = 0.02,
+       levels(Segments),
+       col = c("black", "red", "green3", "blue", "cyan", "magenta"),
+       pch = 19,
+       bg = "gray")
 
 # valutiamo l’accuratezza
-sum(data$Segment == predict(qda)$class)
-sum(data$Segment == predict(qda)$class)/length(data$Segment)
+sum(data.pca$Segment == predict(qda)$class)
+sum(data.pca$Segment == predict(qda)$class)/length(data$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 498 supercomputer su 500, accuratezza del 99.6%
+# 458 supercomputer su 500, accuratezza del 92.52%
 
 # valutiamo l’errore
-sum(data$Segment != predict(qda)$class)
-sum(data$Segment != predict(qda)$class)/length(data$Segment)
+sum(data.pca$Segment != predict(qda)$class)
+sum(data.pca$Segment != predict(qda)$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 2 supercomputer su 500, errore del
-# 0.4%
+# vengono classificati erroneamente solamente 37 supercomputer su 500, errore del
+# 7.47%
+
+# visualizziamo la matrice di confusione
+confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
+
+# visualizziamo curva ROC multiclasse
+lda_plot_data <- as.data.frame(as.numeric(data.pca$Segment == "Academic"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Government"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Industry"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Others"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Research"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Vendor"))
+lda_plot_data <- cbind(lda_plot_data, qda.post)
+colnames(lda_plot_data) <- c("Academic_true",
+                             "Government_true",
+                             "Industry_true",
+                             "Others_true",
+                             "Research_true",
+                             "Vendor_true",
+                             "Academic_pred_QDA",
+                             "Government_pred_QDA",
+                             "Industry_pred_QDA",
+                             "Others_pred_QDA",
+                             "Research_pred_QDA",
+                             "Vendor_pred_QDA")
+
+roc_res <- multi_roc(lda_plot_data)
+roc_res_df <- plot_roc_data(roc_res)
+
+ggplot(roc_res_df, aes(x = 1-Specificity, y=Sensitivity)) +
+  geom_path(aes(color = Group, linetype=Method), size=1.5) +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), 
+               colour='grey', linetype = 'dotdash') +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.justification=c(1, 0), legend.position=c(.95, .05),
+        legend.title=element_blank(), 
+        legend.background = element_rect(fill=NULL, size=0.5, 
+                                         linetype="solid", colour ="black"))
 
 # Autovaluazione Analisi Discriminante Quadratica
-acc = rep(0, 25)
+acc = rep(0, 30)
 l = nrow(data)
 for(i in 1:30) {
-  idx = sample(l, 25)
+  idx = sample(l, 30)
   train = data.pca[-idx,]
   test = data.pca[idx,]
   train.qda = qda(Segment~., data=train)
   test.pt = predict(train.qda, newdata=test)$class
-  acc[i] = sum(test.pt == data$Segment[idx])/25
+  acc[i] = sum(test.pt == data.pca$Segment[idx])/30
 }
 mean(acc)
 sd(acc)
-hist(acc)
+hist(acc, 10)
 
 ################################################################################
 #####################         REGRESSIONE LOGISTICA        #####################
 ################################################################################
 
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:9])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[10] <- "Segment"
+# costruiamo il data frame con le osservazioni secondo la PCA: in questo caso
+# dobbiamo tenere a mente anche il fatto che la nostra scelta è influenzata
+# anche da risultati che otteniamo, in termini di convergenza, dal modello
+# di regressione logistica
+data.pca <- as.data.frame(pca$scores[,c(10, 7, 6, 8, 12)])
+data.pca <- cbind(data.pca, Segments)
+colnames(data.pca)[6] <- "Segment"
 
 # regressione logistica per classificare Academic
-dt = data.pca[,1:9]
+dt = data.pca[,1:5]
 dt$class<-as.numeric(data.pca$Segment == "Academic")
 academic.glm = glm(class~., family = binomial, data = dt)
 academic.p = predict(academic.glm, type="response")
 
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:12])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[13] <- "Segment"
-
 # regressione logistica per classificare Government
-dt = data.pca[,1:12]
+dt = data.pca[,1:5]
 dt$class<-as.numeric(data.pca$Segment == "Government")
 government.glm = glm(class~., family = binomial, data = dt)
 government.p = predict(government.glm, type="response")
 
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:12])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[13] <- "Segment"
-
 # regressione logistica per classificare Industry
-dt = data.pca[,1:12]
+dt = data.pca[,1:5]
 dt$class<-as.numeric(data.pca$Segment == "Industry")
 industry.glm = glm(class~., family = binomial, data = dt)
 industry.p = predict(industry.glm, type="response")
 
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:12])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[13] <- "Segment"
-
 # regressione logistica per classificare Others
-dt = data.pca[,1:12]
+dt = data.pca[,1:5]
 dt$class<-as.numeric(data.pca$Segment == "Others")
 others.glm = glm(class~., family = binomial, data = dt)
 others.p = predict(others.glm, type="response")
 
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:12])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[13] <- "Segment"
-
 # regressione logistica per classificare Research
-dt = data.pca[,1:12]
+dt = data.pca[,1:5]
 dt$class<-as.numeric(data.pca$Segment == "Research")
 research.glm = glm(class~., family = binomial, data = dt)
 research.p = predict(research.glm, type="response")
 
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:9])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[10] <- "Segment"
-
 # regressione logistica per classificare Vendor
-dt = data.pca[,1:9]
+dt = data.pca[,1:5]
 dt$class<-as.numeric(data.pca$Segment == "Vendor")
 vendor.glm = glm(class~., family = binomial, data = dt)
 vendor.p = predict(vendor.glm, type="response")
@@ -348,5 +442,57 @@ for(i in 1:l) {
 }
 res <- factor(res)
 levels(res) <- c("Academic", "Government", "Industry", "Others", "Research", "Vendor")
+
+# valutiamo l’accuratezza
 sum(data.pca$Segment == res)
 sum(data.pca$Segment == res)/l
+
+# valutiamo l’errore
+sum(data.pca$Segment != res)
+sum(data.pca$Segment != res)/l
+
+# dovendo abbassare il numero di fattori presi in considerazione per far si che
+# l'algoritmo converga per tutti i modelli di regressione logistica costruiti
+# la precisione che otteniamo non è proprio soddisfacente rispetto ai precedenti
+# due modelli analizzati: 343 classificazioni corrette e 152 errate, accuratezza
+# del 69.29% con un margine di errore pari al 30.70%
+
+# visualizziamo curva ROC multiclasse
+lda_plot_data <- as.data.frame(as.numeric(data.pca$Segment == "Academic"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Government"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Industry"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Others"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Research"))
+lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Vendor"))
+lda_plot_data <- cbind(lda_plot_data, academic.p)
+lda_plot_data <- cbind(lda_plot_data, government.p)
+lda_plot_data <- cbind(lda_plot_data, industry.p)
+lda_plot_data <- cbind(lda_plot_data, others.p)
+lda_plot_data <- cbind(lda_plot_data, research.p)
+lda_plot_data <- cbind(lda_plot_data, vendor.p)
+colnames(lda_plot_data) <- c("Academic_true",
+                             "Government_true",
+                             "Industry_true",
+                             "Others_true",
+                             "Research_true",
+                             "Vendor_true",
+                             "Academic_pred_GLM",
+                             "Government_pred_GLM",
+                             "Industry_pred_GLM",
+                             "Others_pred_GLM",
+                             "Research_pred_GLM",
+                             "Vendor_pred_GLM")
+
+roc_res <- multi_roc(lda_plot_data)
+roc_res_df <- plot_roc_data(roc_res)
+
+ggplot(roc_res_df, aes(x = 1-Specificity, y=Sensitivity)) +
+  geom_path(aes(color = Group, linetype=Method), size=1.5) +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), 
+               colour='grey', linetype = 'dotdash') +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.justification=c(1, 0), legend.position=c(.95, .05),
+        legend.title=element_blank(), 
+        legend.background = element_rect(fill=NULL, size=0.5, 
+                                         linetype="solid", colour ="black"))
