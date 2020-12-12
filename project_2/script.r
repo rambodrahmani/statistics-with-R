@@ -7,6 +7,7 @@ library(corrplot)
 library(caret)
 library(MASS)
 library(cluster)
+library(ggbiplot)
 
 ################################################################################
 ####################    IMPORTAZIONE E PULIZIA DEI DATI    #####################
@@ -68,26 +69,33 @@ data$Power.Efficiency..GFlops.Watts. <- NULL
 
 # assegniamo nomi più leggibili alle colonne rimanenti della tabella che saranno
 # oggetto della nostra analisi
+colnames(data) <- c("Site", "Manufacturer", "Country", "Year", "Segment",
+                    "TotalCores", "Rmax", "Rpeak", "Nmax", "Architecture",
+                    "Processor", "ProcessorTechnology", "ProcessorSpeed",
+                    "OperatingSystem", "CoProcessor", "CoresPerSocket",
+                    "ProcessorGeneration", "SystemModel", "SystemFamily",
+                    "InterconnectFamily", "Interconnect", "Continent")
 
 # stampa sommario struttura iniziale: prime osservazioni
 summary(data)
 str(data)
 with(data, table(Segment))
 
-# convertiamo i dati di tipo Factor in numerico
+# convertiamo i dati di tipo Factor in numeric in modo da non avere problemi in
+# seguito per i differenti tipi di analisi
 data$Site <- as.numeric(data$Site)
 data$Manufacturer <- as.numeric(data$Manufacturer)
 data$Country <- as.numeric(data$Country)
-#data$Segment <- as.numeric(data$Segment)
-data$Architecture <- as.numeric(data$Segment)
+data$Segment <- as.numeric(data$Segment)
+data$Architecture <- as.numeric(data$Architecture)
 data$Processor <- as.numeric(data$Processor)
-data$Processor.Technology <- as.numeric(data$Processor.Technology)
-data$Operating.System  <- as.numeric(data$Operating.System )
-data$Accelerator.Co.Processor <- as.numeric(data$Accelerator.Co.Processor)
-data$Processor.Generation <- as.numeric(data$Processor.Generation)
-data$System.Model <- as.numeric(data$System.Model)
-data$System.Family <- as.numeric(data$System.Family)
-data$Interconnect.Family <- as.numeric(data$Interconnect.Family)
+data$ProcessorTechnology <- as.numeric(data$ProcessorTechnology)
+data$OperatingSystem  <- as.numeric(data$OperatingSystem)
+data$CoProcessor <- as.numeric(data$CoProcessor)
+data$ProcessorGeneration <- as.numeric(data$ProcessorGeneration)
+data$SystemModel <- as.numeric(data$SystemModel)
+data$SystemFamily <- as.numeric(data$SystemFamily)
+data$InterconnectFamily <- as.numeric(data$InterconnectFamily)
 data$Interconnect <- as.numeric(data$Interconnect)
 data$Continent <- as.numeric(data$Continent)
 
@@ -99,26 +107,10 @@ data<-na.omit(data)
 # controlliamo la nuova struttura dei dati
 str(data)
 
-################################################################################
-#####################                  PCA                 #####################
-################################################################################
-pca = princomp(scale(subset(data, select=-Segment)))
-summary(pca)
-biplot(pca)
-loadings(pca)
-
-# costruiamo il data frame con le osservazioni secondo la PCA
-data.pca<-as.data.frame(pca$scores[,1:10])
-data.pca<-cbind(data.pca, data$Segment)
-colnames(data.pca)[11] <- "Segment"
-
-################################################################################
-####################     ANALISI DISCRIMINANTE LINEARE     #####################
-################################################################################
-lda = lda(Segment~., data=data.pca)
-plot(lda, col = 1 + as.numeric(data.pca$Segment))
-
-lda.values=predict(lda)
+# costruzione modello LDA preliminare
+lda = lda(Segment~., data=data)
+plot(lda, col = 1 + as.numeric(data$Segment))
+lda.values = predict(lda)
 plot(lda.values$x, pch=20, col = as.numeric(data$Segment)+1)
 
 # valutiamo l’accuratezza
@@ -126,18 +118,71 @@ sum(data$Segment == lda.values$class)
 sum(data$Segment == lda.values$class)/length(data$Segment)
 
 # vengono classificati correttamente (nel segment di mercato di appartenenza)
-# 498 supercomputer su 500, accuratezza del 99.6%
+# 363 supercomputer su 500, accuratezza del 73.33%
 
 # valutiamo l’errore
 sum(data$Segment != lda.values$class)
 sum(data$Segment != lda.values$class)/length(data$Segment)
 
-# vengono classificati erroneamente solamente 2 supercomputer su 500, errore del
-# 0.4%
+# vengono classificati erroneamente solamente 132 supercomputer su 500, errore
+# del 26.67%
 
-# sulla tabella sulla quale è stato addrestrato, il modello fa parecchio bene
-# anche se ovviamente questo non è un risultato sorprendente, anzi, ci sarebbe
-# stato da preoccuparsi fosse stato il contrario
+# non è stata effettuata alcuna suddivisione dei dati in training set e test
+# set, e si ottengono risultati non soddisfacenti inferiori all'80% di
+# precisione: si procede con una analisi di tipo PCA per cercare di ridurre
+# il numero di fattori in gioco e, soprattutto, catturare quelle componenti
+# che meglio descrivono il fattore Segment
+
+# modello per analisi discriminante quadratica
+qda = qda(Segment~., data=data)
+
+# Error in qda.default(x, grouping, ...) : 
+#   some group is too small for 'qda'
+# la QDA non funzione nemmeno:
+# The problem seems to be that you have more variables (columns) than the
+# smallest of your classes. You need to reduce the number of variables or use a
+# LDA instead.
+
+################################################################################
+#####################                  PCA                 #####################
+################################################################################
+pca = princomp(scale(data))
+summary(pca)
+biplot(pca, col = c("gray", "red"))
+loadings(pca)
+ggbiplot(pca)
+
+plot(cumsum(pca$sdev^2)/sum(pca$sdev^2), type="b", ylim=c(0,1))
+segments(1, 0.8, 23, 0.8, col="red")
+
+################################################################################
+####################     ANALISI DISCRIMINANTE LINEARE     #####################
+################################################################################
+# costruiamo il data frame con le componenti che megglio catturano la
+# variabilità del fattore originale Segment
+data.pca<-as.data.frame(pca$scores[,1:10])
+data.pca<-cbind(data.pca, data$Segment)
+colnames(data.pca)[11] <- "Segment"
+
+lda = lda(Segment~., data=data.pca)
+plot(lda, col = 1 + as.numeric(data.pca$Segment))
+
+lda.values=predict(lda)
+plot(lda.values$x, pch=20, col = as.numeric(data.pca$Segment)+1)
+
+# valutiamo l’accuratezza
+sum(data$Segment == lda.values$class)
+sum(data$Segment == lda.values$class)/length(data.pca$Segment)
+
+# vengono classificati correttamente (nel segment di mercato di appartenenza)
+# 477 supercomputer su 500, accuratezza del 96.4%
+
+# valutiamo l’errore
+sum(data$Segment != lda.values$class)
+sum(data$Segment != lda.values$class)/length(data$Segment)
+
+# vengono classificati erroneamente solamente 18 supercomputer su 500, errore
+# del 3.6%
 
 # Autovaluazione Analisi Discriminante Lineare
 acc = rep(0, 30)
@@ -180,11 +225,7 @@ sum(data$Segment != predict(qda)$class)/length(data$Segment)
 # vengono classificati erroneamente solamente 2 supercomputer su 500, errore del
 # 0.4%
 
-# sulla tabella sulla quale è stato addrestrato, il modello fa parecchio bene
-# anche se ovviamente questo non è un risultato sorprendente, anzi, ci sarebbe
-# stato da preoccuparsi fosse stato il contrario
-
-# Autovaluazione Analisi Discriminante Lineare
+# Autovaluazione Analisi Discriminante Quadratica
 acc = rep(0, 1)
 l = nrow(data)
 for(i in 1:30) {
