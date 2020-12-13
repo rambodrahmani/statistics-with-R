@@ -121,7 +121,7 @@ totale delle $500$ osservazioni, le suddette colonne sono state eliminate.
 Subito dopo l'importazione e la pulizia dei dati, sono state effettuate due
 preliminari classificazioni ottenendo i seguenti risultati:
 \begin{itemize}
-	\item \textbf{Analisi Discriminante Lineare}: una accuratezza non
+	\item \textbf{Analisi Discriminante Lineare}: un'accuratezza non
 		soddisfacente del $73.33\%$
 	\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
 Confusion Matrix and Statistics
@@ -145,7 +145,9 @@ Error in qda.default(x, grouping, ...) :
   some group is too small for 'qda'
 	\end{lstlisting}
 \end{itemize}
-Una analisi delle componenti principali per ridurre la dimensione del problema
+Non \`e stata effettuata alcuna suddivisione dei dati in training set e test
+set, e si ottengono risultati con capacit\`a predittiva inferiore all'$80\%$:
+una analisi delle componenti principali per ridurre la dimensione del problema
 si rivela quindi inevitabile.
 \subsection{Preliminare analisi delle Componenti Principali}
 Una prima analisi delle componenti principali, \textbf{non prendendo in
@@ -163,28 +165,29 @@ considerazione anche la classe delle osservazioni.
 		\includegraphics[scale=.38]{imgs/cumulative_variance.pdf}
 	\end{minipage}
 \end{figure}
-\noindent Nonostante non si tratti certamente un problema che potremmo definire
-"passibile di riduzione", possiamo notare che con un numero di fattori pari a
-$10$ catturiamo circa l'$85\%$ della struttura. Meno della met\`a quindi del
-numero di fattori iniziali. \`E certamente un miglioramento. Ho identificato le
-componenti principali che meglio catturavano la varianza del fattore originario
-"Segment" analizzando gli allineamenti nel \textbf{biplot} e i coefficienti
-della \textbf{matrice dei loading}. Con questo nuovo insieme di fattori,
-\textbf{la dimensione di analisi del problema \`e diminuita dall'iniziale $22$ a
-$5$}. Sono quindi stati valutati a questo punto un modello di classificazione
-per mezzo di Analisi Discriminante Lineare, uno di classificazione per mezzo di
-Analisi Discriminante Quadratica e uno di classificazione per mezzo di
-Regressione Logistica. I risultati ottenuti sono esposti nelle sezioni a
-seguire.
+\noindent Nonostante non si tratti certamente di un problema che potremmo
+definire "passibile di riduzione", possiamo notare che con un numero di fattori
+pari a $10$ catturiamo circa l'$85\%$ della struttura. Meno della met\`a quindi
+del numero di fattori iniziali. \`E certamente un miglioramento. Ho identificato
+le componenti principali che meglio catturavano la varianza del fattore
+originario "Segment" analizzando gli allineamenti nel \textbf{biplot} e i
+coefficienti della \textbf{matrice dei loading}. Con questo nuovo insieme di
+fattori, \textbf{la dimensione di analisi del problema \`e diminuita
+dall'iniziale $22$ a $5$}. Sono quindi stati valutati a questo punto un modello
+di classificazione per mezzo di Analisi Discriminante Lineare, uno di
+classificazione per mezzo di Analisi Discriminante Quadratica e uno di
+classificazione per mezzo di Regressione Logistica. I risultati ottenuti sono
+esposti nelle sezioni a seguire.
 \subsection{Classificazione per mezzo di Analisi Discriminante Lineare}
-Sono stati utilizzati $5$ fattori ottenendo  un'accuratezza media dell'$85.55\%$
-e una deviazione standard del $6.57\%$. Per ottenere risultati statisticamente
-significativi l'esperimento \`e stato ripetuto $30$. Notiamo quindi un netto
-miglioramento rispetto all'analisi preliminare precedente la PCA.
+Sono state utilizzate $5$ componenti principali ottenendo un'accuratezza media
+dell'$85.55\%$ e una deviazione standard del $6.57\%$. Per ottenere risultati
+statisticamente significativi l'esperimento \`e stato ripetuto $30$. Notiamo
+quindi un netto miglioramento rispetto all'analisi preliminare precedente la
+PCA.
 \begin{figure}[H]
 	\vspace{-2.5cm}
 	\hspace{-0.8cm}
-	\includegraphics[scale=.61]{imgs/LDA_plot.pdf}
+	\includegraphics[scale=.59]{imgs/LDA_plot.pdf}
 \end{figure}
 \vspace{-0.6cm}
 \begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
@@ -199,34 +202,43 @@ Prediction    Academic  Government  Industry  Others  Research  Vendor
   Others             0           0         0       8         6       0
   Research           0           0         0       6        82       1
   Vendor             0           0         0       0         3       7
-
 Overall Statistics
                Accuracy : 0.8929          
 \end{lstlisting}
 \begin{figure}[H]
 	\vspace{-0.1cm}
-	\hspace{-1.0cm}
-	\includegraphics[scale=.61]{imgs/LDA_ggplot.pdf}
+	\hspace{-0.9cm}
+	\includegraphics[scale=.59]{imgs/LDA_ggplot.pdf}
 \end{figure}
+\noindent I valori AUC: Area Under the ROC Curve per ogni classe sono i seguenti
 \clearpage
+-
+\vspace{-1.22cm}
+\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+ Academic   Government   Industry   Others     Research   Vendor
+ 0.9968615  0.9812428    0.9912220  0.9787645  0.9700541  0.9976899
+\end{lstlisting}
+Non ci dobbiamo scordare che questi dati sono relativi all'utilizzo del modello
+sugli stessi dati utilizzati per allenarlo. In fase di autovalutazione i valori
+sono inferiori ovviamente:
 \begin{figure}[H]
-	\vspace{-2.0cm}
-	\hspace{-1.0cm}
-	\includegraphics[scale=.65]{imgs/LDA_hist.pdf}
+	\vspace{-0.5cm}
+	\hspace{-0.9cm}
+	\includegraphics[scale=.58]{imgs/LDA_hist.pdf}
 \end{figure}
 \subsection{Classificazione per mezzo di Analisi Discriminante Quadratica}
 Nell'analisi preliminare precedente alla PCA, non era stato possibile in alcun
 modo costruire un modello di Classificazione Multiclasse per mezzo di Analisi
 Discriminanete Quadratica dato che il numero di fattori era eccessivo rispetto
 al numero totale di osservazioni, e a causa di collinearit\`a tra i fattori che
-rendevono la matrice di Covarianza associata alla tabella singolare, non
+rendevano la matrice di Covarianza associata alla tabella singolare, non
 invertibile.\\
 \\
-Grazie alla riduzione dimensionale del problema invece, utilizzando questa volta
-$5$ fattori, si ottiene un modello di classificazione multiclasse con
-un'accuratezza media dell'$88.33\%$ e una deviazione standard del $5.85\%$.
-Per ottenere risultati statisticamente significativi l'esperimento \`e stato
-ripetuto $30$ volte.
+Grazie alla riduzione dimensionale del problema invece, utilizzando anche questa
+volta $5$ componenti principali, si ottiene un modello di classificazione
+multiclasse con un'accuratezza media dell'$88.33\%$ e una deviazione standard
+del $5.85\%$. Per ottenere risultati statisticamente significativi l'esperimento
+\`e stato ripetuto $30$ volte.
 \begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
 > confusionMatrix(as.factor(qda.values$class), as.factor(Segments))
 Confusion Matrix and Statistics
@@ -239,30 +251,39 @@ Prediction    Academic  Government  Industry  Others  Research  Vendor
   Others             0           0         0      12         1       0
   Research           0           0        10       2        94       3
   Vendor             0           0         0       0         3       5
-
 Overall Statistics
                Accuracy : 0.9253
 \end{lstlisting}
-Utilizzando $5$ fattori con un totale di $500$ osservazioni possiamo affermare
-che l'analisi non \`e affetta da overfitting.
+Raggiungiamo quindi un capacit\`a predittiva maggiore rispetto alla
+classificazione per mezzo LDA. Utilizzando $5$ fattori con un totale di $500$
+osservazioni inoltre, possiamo affermare che l'analisi non \`e affetta da
+overfitting.
 \clearpage
 \begin{figure}[H]
-	\vspace{-1.0cm}
-	\hspace{-0.5cm}
-	\includegraphics[scale=.60]{imgs/QDA_ggplot.pdf}
+	\vspace{-2.0cm}
+	\includegraphics[scale=.55]{imgs/QDA_ggplot.pdf}
+	\vspace{-0.4cm}
 \end{figure}
+\noindent I valori AUC: Area Under the ROC Curve per ogni classe sono i seguenti
+\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+ Academic   Government  Industry   Others     Research   Vendor
+ 0.9994420  0.9927906   0.9904795  0.9995545  0.9919141  0.9964066
+\end{lstlisting}
+In fase di autovalutazione la precisione di predizione \`e inferiore ovviamente:
 \begin{figure}[H]
+	\vspace{-0.4cm}
 	\hspace{-0.5cm}
 	\includegraphics[scale=.6]{imgs/QDA_hist.pdf}
 \end{figure}
 \subsection{Classificazione per mezzo di Regressione Logistica}
 La costruzione di un modello di classificazione per mezzo di regressione
-ligistica, non trattandosi di una classificazione dicotomica, ha richiesto pi\`u
-lavoro. E i risultati ottenuti non sono stati per niente soddisfacenti, tanto da
-poter scartare questo modello senza ulteriori approfondimenti.\\
-Sono stati utilizzati $5$ fattori ottenendo un'accuratezza di classificazione
+logistica, non trattandosi di una classificazione dicotomica, ha richiesto pi\`u
+lavoro, e i risultati ottenuti non sono stati per niente soddisfacenti, tanto da
+poter scartare questo modello senza ulteriori approfondimenti. Utilizzando le
+stesse $5$ componenti principali si ottiene un'accuratezza di classificazione
 pari a circa $69\%$.
 \begin{figure}[H]
+	\vspace{-1.5cm}
 	\hspace{-0.5cm}
 	\includegraphics[scale=.60]{imgs/GLM_ggplot.pdf}
 \end{figure}
@@ -270,15 +291,14 @@ pari a circa $69\%$.
 \section{Conclusioni}
 In ultima analisi, scartando il modello di classificazione per mezzo regressione
 logistica, che fa poco meglio del lancio di una moneta, per quanto riguarda i
-due restati modelli che abbiamo analizzato, in fase di analisi ho notato che
-effettuando un scelta \textit{ad-hoc} delle componenti principali, differente
-quindi tra LDA e QDA, si ottiene una capacit\`a predittiva maggiore per entrambi
-i modelli superiore al $95\%$. Ottenere questi risultati comporta anche
-aumentare il numero di componenti (anche se di poco, uno o due componenti
-massimo) principali utilizzate. Per mantenere l'analisi il pi\`u coerente
-possibile e per ottenere risultati il pi\`u possibile comparabili, ho utilizzato
-per tutti i modelli valutati lo stesso insieme di componenti principali
-della PCA.\\
+due restati modelli presentati, in fase di analisi ho notato che effettuando una
+scelta \textit{ad-hoc} delle componenti principali, differente quindi tra LDA e
+QDA, si ottiene una capacit\`a predittiva maggiore per entrambi i modelli
+superiore al $95\%$. Ottenere questi risultati comporta anche aumentare il
+numero di componenti (anche se di poco, uno o due componenti massimo)
+principali utilizzate. Per mantenere l'analisi il pi\`u coerente possibile e per
+ottenere risultati il pi\`u possibile comparabili, ho utilizzato per tutti i
+modelli valutati lo stesso sottoinsieme di componenti principali della PCA.\\
 \\
 Analizzando con pi\`u attenzione la matrice di confusione dei due modelli, ci
 rendiamo conto che entrambi sbagliano nel classificare
@@ -295,5 +315,10 @@ abbiamo analizzato noi utilizzano solamente $5$ fattori. Evidentemente quindi,
 l'errore non \`e dovuto solamente a una scarsit\`a o abbondanza di campioni per
 la particolare classe analizzata, ma anche a qualche fattore mancante che
 porterebbe certamente ad una maggiore proporzione di varianza spiegata della
-struttura delle osservazioni originarie.
+struttura delle osservazioni originarie.\\
+\\
+Notiamo anche che il modello di classificazione per mezzo di LDA e quello per
+mezzo di QDA sbagliano in fase di predizione relativamente a classi differenti.
+\`E quindi certamente possibile ottenere un modello di classificazione migliore
+utilizzando il migliore per ciascuna classe.
 \end{document}

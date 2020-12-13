@@ -8,7 +8,6 @@ library(caret)
 library(MASS)
 library(cluster)
 library(ggbiplot)
-library(pROC)
 require(multiROC)
 require(ggplot2)
 
@@ -124,7 +123,7 @@ legend("bottomright",
        pch = 19,
        bg = "gray")
 
-# valutiamo l’accuratezza del modello LDA preliminare
+# valutiamo l'accuratezza del modello LDA preliminare
 sum(data$Segment == lda.values$class)
 sum(data$Segment == lda.values$class)/length(data$Segment)
 
@@ -249,7 +248,7 @@ sum(data.pca$Segment != lda.values$class)/length(data$Segment)
 # visualizziamo la matrice di confusione
 confusionMatrix(as.factor(lda.values$class), as.factor(Segments))
 
-# visualizziamo curva ROC multiclasse
+# visualizziamo la curva ROC multiclasse
 lda_plot_data <- as.data.frame(as.numeric(data.pca$Segment == "Academic"))
 lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Government"))
 lda_plot_data <- cbind(lda_plot_data, as.numeric(data.pca$Segment == "Industry"))
@@ -263,15 +262,19 @@ colnames(lda_plot_data) <- c("Academic_true",
                              "Others_true",
                              "Research_true",
                              "Vendor_true",
-                             "Academic_pred_LDA",
-                             "Government_pred_LDA",
-                             "Industry_pred_LDA",
-                             "Others_pred_LDA",
-                             "Research_pred_LDA",
-                             "Vendor_pred_LDA")
+                             "Academic_pred_m1",
+                             "Government_pred_m1",
+                             "Industry_pred_m1",
+                             "Others_pred_m1",
+                             "Research_pred_m1",
+                             "Vendor_pred_m1")
 
+# costruzione modello multi_roc
 roc_res <- multi_roc(lda_plot_data)
 roc_res_df <- plot_roc_data(roc_res)
+
+# lista dei valori di AUC per ogni classe
+unlist(roc_res$AUC$m1)
 
 ggplot(roc_res_df, aes(x = 1-Specificity, y=Sensitivity)) +
   ggtitle("Curva ROC Classificazione Multiclasse tramite Analisi Driscriminante Lineare") +
@@ -296,7 +299,7 @@ for(i in 1:30) {
 }
 mean(acc)
 sd(acc)
-hist(acc, 10, main="Accuratezza della Classificazione per mezzo di LDA",
+hist(acc, 10, main="Accuratezza della Classificazione per mezzo di LDA in fase di Autovalutazione",
      col = c("blue", "red", "gray", "green"), xlab = "Accuratezza")
 
 ################################################################################
@@ -341,7 +344,7 @@ sum(data.pca$Segment != qda.values$class)/length(data$Segment)
 # visualizziamo la matrice di confusione
 confusionMatrix(as.factor(qda.values$class), as.factor(Segments))
 
-# visualizziamo curva ROC multiclasse
+# visualizziamo la curva ROC multiclasse
 qda_plot_data <- as.data.frame(as.numeric(data.pca$Segment == "Academic"))
 qda_plot_data <- cbind(qda_plot_data, as.numeric(data.pca$Segment == "Government"))
 qda_plot_data <- cbind(qda_plot_data, as.numeric(data.pca$Segment == "Industry"))
@@ -355,26 +358,29 @@ colnames(qda_plot_data) <- c("Academic_true",
                              "Others_true",
                              "Research_true",
                              "Vendor_true",
-                             "Academic_pred_QDA",
-                             "Government_pred_QDA",
-                             "Industry_pred_QDA",
-                             "Others_pred_QDA",
-                             "Research_pred_QDA",
-                             "Vendor_pred_QDA")
+                             "Academic_pred_m2",
+                             "Government_pred_m2",
+                             "Industry_pred_m2",
+                             "Others_pred_m2",
+                             "Research_pred_m2",
+                             "Vendor_pred_m2")
 
+# costruzione modello multi_roc
 roc_res <- multi_roc(qda_plot_data)
 roc_res_df <- plot_roc_data(roc_res)
 
+# lista dei valori di AUC per ogni classe
+unlist(roc_res$AUC$m2)
+
 ggplot(roc_res_df, aes(x = 1-Specificity, y=Sensitivity)) +
+  ggtitle("Curva ROC Classificazione Multiclasse tramite Analisi Driscriminante Quadratica") +
   geom_path(aes(color = Group, linetype=Method), size=1.5) +
-  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), 
-               colour='grey', linetype = 'dotdash') +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), colour='grey', linetype = 'dotdash') +
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5), 
         legend.justification=c(1, 0), legend.position=c(.95, .05),
         legend.title=element_blank(), 
-        legend.background = element_rect(fill=NULL, size=0.5, 
-                                         linetype="solid", colour ="black"))
+        legend.background = element_rect(fill=NULL, size=0.5, linetype="solid", colour ="black"))
 
 # Autovaluazione Analisi Discriminante Quadratica
 acc = rep(0, 30)
@@ -389,7 +395,7 @@ for(i in 1:30) {
 }
 mean(acc)
 sd(acc)
-hist(acc, 10, main="Accuratezza della Classificazione per mezzo di QDA",
+hist(acc, 10, main="Accuratezza della Classificazione per mezzo di QDA in fase di Autovalutazione",
      col = c("blue", "red", "gray", "green"), xlab = "Accuratezza")
 
 ################################################################################
