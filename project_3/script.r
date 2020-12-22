@@ -139,35 +139,83 @@ qqline(data_ts.dm.rl, col="red", lwd=2)
 layout(1)
 
 # stagionalita' multipla con seasonal window ridotta
-data_ts.stl = stl(data_ts, s.window=3)
-plot(data_ts.stl, main="Decomposizione con Stagionalità non uniforme")
+data_ts.stl = stl(data_ts, s.window = 3)
+plot(data_ts.stl, main = "Decomposizione con Stagionalità non uniforme")
 
-# modello smorzamento esponenziale con Trend
-data_ts.set = HoltWinters(data_ts, gamma=F)
+# smorzamento esponenziale
+data_ts.se = HoltWinters(data_ts, beta = F, gamma = F)
+data_ts.se
+plot(data_ts.se)
+
+# smorzamento esponenziale con Trend
+data_ts.set = HoltWinters(data_ts, gamma = F)
+data_ts.set
 plot(data_ts.set, main="Holt-Winters filtering with Trend")
 
 # modello smorzamento esponenziale con Trend e Stagionalita'
+data_ts.sets = HoltWinters(data_ts)
+data_ts.sets
+plot(data_ts.sets, main="Holt-Winters filtering with Trend and Seasonality")
 
-# comparazione SE e SET
-m = 5
+# comparazione grafica SE, SET e SETS
+m = 12
 l = length(data_ts)
+
+pred.se = rep(0, m)
+pred.set = rep(0, m)
+pred.sets = rep(0, m)
+
 res.se = rep(0, m)
 res.set = rep(0, m)
 res.sets = rep(0, m)
+
 j = 1
 for (i in (l - m):(l - 1)) {
   data_ts = ts(data[1:i, 2], frequency = 12, start = 2005)
   data_ts.se = HoltWinters(data_ts, beta = F, gamma = F)
   data_ts.set = HoltWinters(data_ts, gamma = F)
   data_ts.sets = HoltWinters(data_ts)
+  
+  pred.se[j] = predict(data_ts.se, n.ahead = 1, se.fit = F)
+  pred.set[j] = predict(data_ts.set, n.ahead = 1, se.fit = F)
+  pred.sets[j] = predict(data_ts.sets, n.ahead = 1, se.fit = F)
+  
   res.se[j] = data[i + 1, 2] - predict(data_ts.se, n.ahead = 1, se.fit = F)
   res.set[j] = data[i + 1, 2] - predict(data_ts.set, n.ahead = 1, se.fit = F)
   res.sets[j] = data[i + 1, 2] - predict(data_ts.sets, n.ahead = 1, se.fit = F)
+  
   j = j + 1
 }
-plot(res.se, type = "b", col = "blue", pch = 20)
-points(res.set, type = "b", col = "green3", pch = 20)
-points(res.sets, type = "b", col = "red", pch = 20)
+
+plot(data[181:192, 2], type = "b", col = "black", pch = 20)
+points(pred.se, type = "b", col = "blue", pch = 20)
+points(pred.set, type = "b", col = "green3", pch = 20)
+points(pred.sets, type = "b", col = "red", pch = 20)
+legend("bottomleft",
+       inset = 0.02,
+       c("Valore Effettivo",
+         "Previsione SE",
+         "Previsione SET",
+         "Previsione SETS"),
+       col = c("black", "blue", "green3", "red"),
+       pch = c(19, 19, 19, 19),
+       bg = "gray",
+       cex = 0.8)
+
+# plot(res.se, type = "b", col = "blue", pch = 20)
+# points(res.set, type = "b", col = "green3", pch = 20)
+# points(res.sets, type = "b", col = "red", pch = 20)
+# legend("bottomleft",
+#        inset = 0.02,
+#        c("Errore SE",
+#          "Errore SET",
+#          "Errore SETS"),
+#        col = c("blue", "green3", "red"),
+#        pch = c(19, 19, 19),
+#        bg = "gray",
+#        cex = 0.8)
+
+# comparazione numerica SE, SET e SETS
 sqrt(mean(res.se^2))
 sd(res.se)
 sqrt(mean(res.set^2))
