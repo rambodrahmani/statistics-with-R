@@ -142,3 +142,35 @@ layout(1)
 data_ts.stl = stl(data_ts, s.window=3)
 plot(data_ts.stl, main="Decomposizione con Stagionalità non uniforme")
 
+# modello smorzamento esponenziale con Trend
+data_ts.set = HoltWinters(data_ts, gamma=F)
+plot(data_ts.set, main="Holt-Winters filtering with Trend")
+
+# modello smorzamento esponenziale con Trend e Stagionalita'
+
+# comparazione SE e SET
+m = 5
+l = length(data_ts)
+res.se = rep(0, m)
+res.set = rep(0, m)
+res.sets = rep(0, m)
+j = 1
+for (i in (l - m):(l - 1)) {
+  data_ts = ts(data[1:i, 2], frequency = 12, start = 2005)
+  data_ts.se = HoltWinters(data_ts, beta = F, gamma = F)
+  data_ts.set = HoltWinters(data_ts, gamma = F)
+  data_ts.sets = HoltWinters(data_ts)
+  res.se[j] = data[i + 1, 2] - predict(data_ts.se, n.ahead = 1, se.fit = F)
+  res.set[j] = data[i + 1, 2] - predict(data_ts.set, n.ahead = 1, se.fit = F)
+  res.sets[j] = data[i + 1, 2] - predict(data_ts.sets, n.ahead = 1, se.fit = F)
+  j = j + 1
+}
+plot(res.se, type = "b", col = "blue", pch = 20)
+points(res.set, type = "b", col = "green3", pch = 20)
+points(res.sets, type = "b", col = "red", pch = 20)
+sqrt(mean(res.se^2))
+sd(res.se)
+sqrt(mean(res.set^2))
+sd(res.set)
+sqrt(mean(res.sets^2))
+sd(res.sets)
