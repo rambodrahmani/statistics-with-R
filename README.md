@@ -9,4 +9,4 @@ Data Mining at University of Pisa.
 ## Project 2: TOP500 Supercomputers Classification Analysis
 ![Project 2 Screenshot](project_2/imgs/project_2.png)
 
-## Project 3:
+## Project 3: Linux Kernel repository commits Time Series Analysis
