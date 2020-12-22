@@ -5,65 +5,140 @@ rm(list = ls())
 # importazione librerie da utilizzare
 
 # caricamento dei dati dal file csv
-data = read.csv('tabella.csv', header = TRUE, sep = ",")
+data = read.csv('tabella.csv', header = TRUE, sep = ",", stringsAsFactors = F)
 
 # esplorazione preliminare della struttura dei dati
 str(data)
 
-# diagramma a torta con suddivisione dei dati in base all'address space
-table = table(data$address_space)
-slices <- c(table[1], table[2], table[3], table[4])
-lbls <- c("Non-Tor", "Non-VPN", "Tor", "VPN")
-pie(slices, labels = lbls, main="Pie Chart of Countries")
+# mi assicuro che i dati sia consistenti con quanto visto su github.com
+# https://github.com/torvalds/linux: 981,442 commits
+sum(data$commits)
 
-# diagramma a torta con suddivisione dei dati in base all'application category
-table(data$traffic_category)
-table = table(data$traffic_category)
-slices <- table
-lbls <- c("Audio-Streaming", "AUDIO-STREAMING", "Browsing", "Chat", "Email", "File-transfer", "File-Transfer", "P2P", "Video-streaming", "Video-Streaming")
-pie(slices, labels = lbls, main="Pie Chart of Countries")
+# convertiamo in serie storica
+data_ts <- ts(data$commits, frequency = 12, start = c(2001, 9), end = c(2020, 12))
 
-# selezioniamo esclusivamente il traffico relativo alla darknet
-# data <- data[data$address_space != "Non-Tor", ]
-# data <- data[data$address_space != "NonVPN", ]
+# visualizzazione grafica della serie storica
+ts.plot(data_ts, xlab="Anni", ylab="Numero di Commits")
 
-# aggiornamento tabella fattori
-# data$address_space <- factor(data$address_space)
-# table(data$address_space)
+# facciamo partire la serie storica dal gennaio 2005
+data <- data[41:232,]
+data_ts <- ts(data$commits, frequency = 12, start = c(2005, 1), end = c(2020, 12))
 
-# eliminazione colonne non piu necessarie
-data$address_space <- NULL
-data$traffic_category <- NULL
+# visualizzazione grafica della nuova serie storica
+ts.plot(data_ts, xlab="Anni", ylab="Numero di Commits")
 
-# convert AM/PM to 24h format
-multidate <- function(data, formats) {
-  a<-list()
-  for(i in 1:length(formats)){
-    a[[i]] <- format(strptime(data, formats[i]), "%d/%m/%Y %H:%M:%S")
-    a[[1]][!is.na(a[[i]])]<-a[[i]][!is.na(a[[i]])]
-  }
-  a[[1]]
+# parametri della serie storica
+start(data_ts)
+end(data_ts)
+frequency(data_ts)
+
+# funzione di autocorrelazione: abbiamo stagionalita' annuale
+acf(data_ts, 30)
+acf(data_ts, 60)
+
+# indaghiamo sulla presenza di stagionalita'
+plot(diff(data_ts), xlab="Anni", ylab="Numero di Commits al netto del Trend")
+acf(diff(data_ts), 30)
+acf(diff(data_ts), 60)
+
+# non emerge presenza di stagionalita'
+
+# proviamo a confrontare i grafici dei periodi
+m_data = matrix(data[, 2], 12, 16, byrow = F)
+par(bg = "gray24")
+ts.plot(m_data, col = heat.colors(12))
+lines(rowMeans(m_data), lwd = 3, col = "white")
+ts.plot(scale(m_data, scale = F), col = heat.colors(12), main="Numero di commits mensili dal 2005 al 2020 (andamento centrato a media nulla)")
+lines(rowMeans(scale(m_data, scale = F)), lwd = 3, col = "blue")
+legend("bottomleft",
+       inset = 0.02,
+       c("Andamento medio"),
+       col = c("blue"),
+       pch = c(19),
+       bg = "gray",
+       cex = 0.8)
+par(bg = "white")
+
+# visualizziamo le bande di confidenza empiriche, a una deviazione standard
+sd = vector("numeric", 12)
+for (i in 1:12) {
+  sd[i] = sd(m_data[i, ])
 }
-data$timestamp <- multidate(data$timestamp, c("%d/%m/%Y %H:%M", "%d/%m/%Y %I:%M:%S %p"))
+m = rowMeans(m_data)
+plot(m, pch = 20, type = "b", ylim = range(c(m - 2 * sd, m + 2 * sd)), xlab="Mese",
+     main="Bande di confidenza empiriche per il numero mensile di commits")
+arrows(1:12, m - sd, 1:12, m + sd, length = 0.02, angle = 90, code = 3, col = "green3")
+points(m + sd, type = "b", pch = 20, col = "gray")
+points(m - sd, type = "b", pch = 20, col = "gray")
 
-# convert strings to POSIXlt timestamp
-data$timestamp_1 <- as.POSIXct(data$timestamp, format = "%d/%m/%Y %H:%M:%S")
-data$timestamp_2 <- as.POSIXct(data$timestamp, format = "%d/%m/%Y %H:%M")
-data$timestamp_3 <- as.POSIXct(data$timestamp, format = "%d/%m/%Y %H")
-data$time <- format(strptime(data$timestamp, "%d/%m/%Y %H:%M:%S"), "%d/%m/%Y %-H")
+# non c'e' ragione di decomporre la serie: togliamoci ogni dubbio
+data_ts.da = decompose(data_ts, type = "additive")
+plot(data_ts.da)
 
-# order data by timestamp
-data <- data[order(data$timestamp_1), ]
+# confrontiamo le scale tra la componente stagionale e quella di rumore
+plot(data_ts.da$random, col = "blue")
+lines(data_ts.da$seasonal, col = "red")
+legend("topright",
+       inset = 0.02,
+       c("Componente di Errore",
+         "Componente Stagionale"),
+       col = c("blue", "red"),
+       pch = c(19,19),
+       bg = "gray",
+       cex = 0.8)
 
-# add date column
-# data$date <- as.Date(data$timestamp_1)
+# analisi dei residui decomposizione additiva
+layout(t(1:3))
+data_ts.da.r = as.vector(window(data_ts.da$random, c(2005, 7), c(2020, 6)))
+plot(data_ts.da.r, pch = 20)
+#acf(data_ts.da.r)
 
-data$timestamp <- NULL
-data$timestamp_1 <- NULL
-data$timestamp_2 <- NULL
-data$timestamp_3 <- NULL
+# controllo residui gaussiani
+hist(data_ts.da.r, 41, freq = F, main="Istogramma Residui Decomposizione Additiva")
+lines(density(data_ts.da.r), col = "blue")
+lines(sort(data_ts.da.r), dnorm(sort(data_ts.da.r), mean(data_ts.da.r), sd(data_ts.da.r)), col = "red")
+legend("topright",
+       inset = 0.02,
+       c("Densità Empirica",
+         "Densità Gaussiana"),
+       col = c("blue", "red"),
+       pch = c(19, 19),
+       bg = "gray",
+       cex = 0.8)
+qqnorm(data_ts.da.r, main="Q-Q Plot Residui Decomposizione Additiva")
+qqline(data_ts.da.r, col="red", lwd=2)
+layout(1)
 
-library(dplyr)
-data<-data %>% 
-  group_by_if(is.numeric %>% Negate) %>%
-  summarize_all(sum)
+# decomposizione moltiplicativa
+acf(log(data_ts), 30)
+acf(diff(log(data_ts)), 60)
+data_ts.dm = decompose(data_ts, type = "multiplicative")
+plot(data_ts.dm)
+
+# analisi dei residui decomposizione moltiplicativa
+layout(t(1:3))
+data_ts.dm.r = as.vector(window(data_ts.dm$random, c(2005, 7), c(2020, 6)))
+plot(log(data_ts.dm.r), pch = 20)
+#acf(data_ts.dm.r)
+
+# controllo residui gaussiani
+data_ts.dm.rl = log(data_ts.dm.r)
+hist(data_ts.dm.rl, 41, freq = F, main="Istogramma Residui Decomposizione Moltiplicativa")
+lines(density(data_ts.dm.rl), col = "blue")
+lines(sort(data_ts.dm.rl), dnorm(sort(data_ts.dm.rl), mean(data_ts.dm.rl), sd(data_ts.dm.rl)), col = "red")
+legend("topright",
+       inset = 0.02,
+       c("Densità Empirica",
+         "Densità Gaussiana"),
+       col = c("blue", "red"),
+       pch = c(19, 19),
+       bg = "gray",
+       cex = 0.8)
+qqnorm(data_ts.dm.rl, main="Q-Q Plot Residui Decomposizione Moltiplicativa")
+qqline(data_ts.dm.rl, col="red", lwd=2)
+layout(1)
+
+# stagionalita' multipla con seasonal window ridotta
+data_ts.stl = stl(data_ts, s.window=3)
+plot(data_ts.stl, main="Decomposizione con Stagionalità non uniforme")
+

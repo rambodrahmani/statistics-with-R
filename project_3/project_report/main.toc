@@ -1,2 +1,10 @@
 \contentsline {section}{\numberline {1}Introduzione}{1}{section.1}
 \contentsline {section}{\numberline {2}Dati}{1}{section.2}
+\contentsline {subsection}{\numberline {2.1}Esplorazione preliminare}{2}{subsection.2.1}
+\contentsline {section}{\numberline {3}Decomposizione}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Analisi dei residui}{7}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Decomposizione con stagionalit\`a non uniforme}{7}{subsection.3.2}
+\contentsline {section}{\numberline {4}Previsione}{9}{section.4}
+\contentsline {subsection}{\numberline {4.1}Previsione 1}{9}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Previsione 2}{9}{subsection.4.2}
+\contentsline {section}{\numberline {5}Conclusione}{9}{section.5}

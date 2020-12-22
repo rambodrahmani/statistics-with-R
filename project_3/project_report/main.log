@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2020.12.15)  22 DEC 2020 10:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2020.12.15)  22 DEC 2020 19:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -431,52 +431,196 @@ Package caption Info: End \AtBeginDocument code.
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
-
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 54.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 53.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 53.
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+) [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 54.
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 54.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 73.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 73.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <8> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 54.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 73.
+ [2]
+<imgs/ts_plot_1.pdf, id=101, 747.73898pt x 430.7pt>
+File: imgs/ts_plot_1.pdf Graphic file (type pdf)
+<use imgs/ts_plot_1.pdf>
+Package pdftex.def Info: imgs/ts_plot_1.pdf  used on input line 140.
+(pdftex.def)             Requested size: 523.41371pt x 301.48795pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 56--58
-
+Overfull \hbox (44.65492pt too wide) in paragraph at lines 139--142
+[]  []
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 59.
-[1
+<imgs/ts_plot_2.pdf, id=102, 747.75362pt x 425.59pt>
+File: imgs/ts_plot_2.pdf Graphic file (type pdf)
+<use imgs/ts_plot_2.pdf>
+Package pdftex.def Info: imgs/ts_plot_2.pdf  used on input line 150.
+(pdftex.def)             Requested size: 448.65562pt x 255.35596pt.
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 59.
+Overfull \hbox (10.14262pt too wide) in paragraph at lines 150--152
+[][]
+ []
+
+[3
+
+ <./imgs/ts_plot_1.pdf> <./imgs/ts_plot_2.pdf
+
+pdfTeX warning: pdflatex (file ./imgs/ts_plot_2.pdf): PDF inclusion: multiple p
+dfs with page group included in a single page
+>]
+<imgs/acf.pdf, id=126, 747.73047pt x 470.22523pt>
+File: imgs/acf.pdf Graphic file (type pdf)
+<use imgs/acf.pdf>
+Package pdftex.def Info: imgs/acf.pdf  used on input line 164.
+(pdftex.def)             Requested size: 471.0727pt x 296.24345pt.
+
+Overfull \hbox (20.76666pt too wide) in paragraph at lines 163--165
+[]  [] 
+ []
+
+<imgs/diff.pdf, id=127, 747.73047pt x 434.05406pt>
+File: imgs/diff.pdf Graphic file (type pdf)
+<use imgs/diff.pdf>
+Package pdftex.def Info: imgs/diff.pdf  used on input line 177.
+(pdftex.def)             Requested size: 448.64175pt x 260.43443pt.
+
+Overfull \hbox (10.12875pt too wide) in paragraph at lines 177--179
+[][]
+ []
+
+[4
+
+ <./imgs/acf.pdf> <./imgs/diff.pdf
+
+pdfTeX warning: pdflatex (file ./imgs/diff.pdf): PDF inclusion: multiple pdfs w
+ith page group included in a single page
+>]
+<imgs/acf_diff.pdf, id=147, 747.73047pt x 462.991pt>
+File: imgs/acf_diff.pdf Graphic file (type pdf)
+<use imgs/acf_diff.pdf>
+Package pdftex.def Info: imgs/acf_diff.pdf  used on input line 187.
+(pdftex.def)             Requested size: 448.64175pt x 277.79674pt.
+
+Overfull \hbox (10.12875pt too wide) in paragraph at lines 187--189
+[][]
+ []
+
+<imgs/variance.pdf, id=148, 747.73047pt x 462.991pt>
+File: imgs/variance.pdf Graphic file (type pdf)
+<use imgs/variance.pdf>
+Package pdftex.def Info: imgs/variance.pdf  used on input line 195.
+(pdftex.def)             Requested size: 448.64175pt x 277.79674pt.
+
+Overfull \hbox (10.12875pt too wide) in paragraph at lines 195--197
+[][]
+ []
+
+[5
+
+ <./imgs/acf_diff.pdf> <./imgs/variance.pdf
+
+pdfTeX warning: pdflatex (file ./imgs/variance.pdf): PDF inclusion: multiple pd
+fs with page group included in a single page
+>]
+<imgs/decompose_additive.pdf, id=169, 747.79375pt x 490.83376pt>
+File: imgs/decompose_additive.pdf Graphic file (type pdf)
+<use imgs/decompose_additive.pdf>
+Package pdftex.def Info: imgs/decompose_additive.pdf  used on input line 211.
+(pdftex.def)             Requested size: 523.45206pt x 343.58128pt.
+
+Overfull \hbox (44.69327pt too wide) in paragraph at lines 210--213
+[]  []
+ []
+
+<imgs/random_seasonal.pdf, id=170, 747.73047pt x 434.05406pt>
+File: imgs/random_seasonal.pdf Graphic file (type pdf)
+<use imgs/random_seasonal.pdf>
+Package pdftex.def Info: imgs/random_seasonal.pdf  used on input line 217.
+(pdftex.def)             Requested size: 523.40776pt x 303.83577pt.
+
+Overfull \hbox (44.64897pt too wide) in paragraph at lines 216--219
+[]  []
+ []
+
+<imgs/additive_residuals.pdf, id=171, 1089.06876pt x 451.6875pt>
+File: imgs/additive_residuals.pdf Graphic file (type pdf)
+<use imgs/additive_residuals.pdf>
+Package pdftex.def Info: imgs/additive_residuals.pdf  used on input line 236.
+(pdftex.def)             Requested size: 598.98967pt x 248.42888pt.
+
+Overfull \hbox (86.08766pt too wide) in paragraph at lines 235--237
+[]  [] 
+ []
+
+[6
+
+ <./imgs/decompose_additive.pdf> <./imgs/random_seasonal.pdf>]
+<imgs/multiplicative_residuals.pdf, id=191, 1089.06876pt x 451.6875pt>
+File: imgs/multiplicative_residuals.pdf Graphic file (type pdf)
+<use imgs/multiplicative_residuals.pdf>
+Package pdftex.def Info: imgs/multiplicative_residuals.pdf  used on input line 
+241.
+(pdftex.def)             Requested size: 598.98967pt x 248.42888pt.
+
+Overfull \hbox (86.08766pt too wide) in paragraph at lines 240--242
+[]  [] 
+ []
+
+[7 <./imgs/additive_residuals.pdf> <./imgs/multiplicative_residuals.pdf>]
+<imgs/heat_colors.pdf, id=211, 747.79375pt x 490.83376pt>
+File: imgs/heat_colors.pdf Graphic file (type pdf)
+<use imgs/heat_colors.pdf>
+Package pdftex.def Info: imgs/heat_colors.pdf  used on input line 254.
+(pdftex.def)             Requested size: 373.89595pt x 245.41628pt.
+<imgs/stl.pdf, id=212, 779.91376pt x 451.6875pt>
+File: imgs/stl.pdf Graphic file (type pdf)
+<use imgs/stl.pdf>
+Package pdftex.def Info: imgs/stl.pdf  used on input line 269.
+(pdftex.def)             Requested size: 545.93591pt x 316.17908pt.
+
+Overfull \hbox (67.17712pt too wide) in paragraph at lines 268--270
+[]  [] 
+ []
+
+[8
+
+ <./imgs/heat_colors.pdf> <./imgs/stl.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 279.
+ [9
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 279.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 59.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 59.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 279.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 279.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: EF1120AE23B4AFC3F5C2D8ABE49A7D4F;86.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 59.
+(rerunfilecheck)             Checksum: 895C28D788142826CCBB261B0AB034C0;586.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 279.
  ) 
 Here is how much of TeX's memory you used:
- 9051 strings out of 494912
- 133960 string characters out of 6180265
- 247264 words of memory out of 5000000
- 12272 multiletter control sequences out of 15000+600000
- 8475 words of font info for 31 fonts, out of 8000000 for 9000
+ 9232 strings out of 494912
+ 137107 string characters out of 6180265
+ 270384 words of memory out of 5000000
+ 12377 multiletter control sequences out of 15000+600000
+ 9622 words of font info for 35 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 36i,5n,51p,226b,1232s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,8n,51p,226b,1725s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texli
@@ -484,13 +628,14 @@ ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmtt10.pfb>
-Output written on main.pdf (1 page, 109393 bytes).
+lic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
+t10.pfb>
+Output written on main.pdf (9 pages, 7337471 bytes).
 PDF statistics:
- 70 PDF objects out of 1000 (max. 8388607)
- 56 compressed objects within 1 object stream
- 10 named destinations out of 1000 (max. 500000)
- 17 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 291 PDF objects out of 1000 (max. 8388607)
+ 235 compressed objects within 3 object streams
+ 73 named destinations out of 1000 (max. 500000)
+ 141 words of extra memory for PDF output out of 10000 (max. 10000000)
 

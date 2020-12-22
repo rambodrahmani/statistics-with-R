@@ -39,7 +39,7 @@ print(git_log['timestamp'].describe())
 print("")
 
 # determining the first real commit timestamp
-first_commit_timestamp = git_log.iloc[-1]['timestamp']
+first_commit_timestamp = pd.to_datetime('1990')
 
 # determining the last sensible commit timestamp
 last_commit_timestamp = pd.to_datetime('2021')
@@ -59,6 +59,9 @@ commits_per_year = corrected_log.groupby(
 
 # listing the first rows
 print(commits_per_year)
+
+# rename columns
+commits_per_year.columns = ['commits']
 
 # dump to csv file
 commits_per_year.to_csv("tabella.csv")
