@@ -1,0 +1,59 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper, portrait, margin=1.1in]{geometry}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[linktoc=none]{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=blue,
+}
+
+\usepackage{listings}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[justification=centering]{caption}
+\usepackage{wrapfig}
+\usepackage{amsmath}
+
+\renewcommand{\contentsname}{Indice}
+
+\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+
+\begin{document}
+
+\begin{center}
+	\Large\textbf{Analisi dei commits della repository del Kernel Linux}\\
+	\vspace{0.2cm}
+	\large{Progetto per il corso di Statistica del Prof. Marco Romito}\\
+	\vspace{0.5cm}
+	\large\textit{Rambod Rahmani}\\
+	\vspace{0.2cm}
+	\scriptsize{Corso di Laurea Magistrale in\\Artificial Intelligence and
+	Data Engineering}\\
+	\vspace{0.5cm}
+	\normalsize{23 Dicembre 2020}
+\end{center}
+
+\tableofcontents
+
+\section{Introduzione}
+La presente analisi si \`e concentrata sul numero di commits della repository
+del Kernel Linux suddivisi per mese dall'inizio del progetto sino ad oggi.
+\section{Dati}
+I dati sono stati ottenuti utilizzando i log della repository
+\textbf{torvalds/linux} forniti direttamente da \textbf{github.com}. Come primo
+passo \`e stato effettuato un clone pulito della repository:
+\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+$ git clone https://github.com/torvalds/linux.git
+\end{lstlisting}
+Ho poi ottenuti i log dei commits della repository tramite
+\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+$ cd linux
+$ git log --encoding=latin-1 --pretty="%at|%aN" > git.log
+\end{lstlisting}
+che ha prodotto il file \texttt{git.log} contenente tutti i commits con il
+seguente formato\\
+
+\end{document}
