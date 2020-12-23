@@ -158,7 +158,7 @@ data_ts.sets
 plot(data_ts.sets, main="Holt-Winters filtering with Trend and Seasonality")
 
 # comparazione grafica SE, SET e SETS
-m = 12
+m = 24
 l = length(data_ts)
 
 pred.se = rep(0, m)
@@ -187,7 +187,7 @@ for (i in (l - m):(l - 1)) {
   j = j + 1
 }
 
-plot(data[181:192, 2], type = "b", col = "black", pch = 20)
+plot(data[(l - m + 1):l, 2], type = "b", col = "black", pch = 20)
 points(pred.se, type = "b", col = "blue", pch = 20)
 points(pred.set, type = "b", col = "green3", pch = 20)
 points(pred.sets, type = "b", col = "red", pch = 20)
@@ -202,18 +202,18 @@ legend("bottomleft",
        bg = "gray",
        cex = 0.8)
 
-# plot(res.se, type = "b", col = "blue", pch = 20)
-# points(res.set, type = "b", col = "green3", pch = 20)
-# points(res.sets, type = "b", col = "red", pch = 20)
-# legend("bottomleft",
-#        inset = 0.02,
-#        c("Errore SE",
-#          "Errore SET",
-#          "Errore SETS"),
-#        col = c("blue", "green3", "red"),
-#        pch = c(19, 19, 19),
-#        bg = "gray",
-#        cex = 0.8)
+plot(res.se, type = "b", col = "blue", pch = 20)
+points(res.set, type = "b", col = "green3", pch = 20)
+points(res.sets, type = "b", col = "red", pch = 20)
+legend("bottomleft",
+       inset = 0.02,
+       c("Errore SE",
+         "Errore SET",
+         "Errore SETS"),
+       col = c("blue", "green3", "red"),
+       pch = c(19, 19, 19),
+       bg = "gray",
+       cex = 0.8)
 
 # comparazione numerica SE, SET e SETS
 sqrt(mean(res.se^2))

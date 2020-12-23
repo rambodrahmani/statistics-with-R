@@ -167,9 +167,9 @@ sembra per\`o evidenziare alcuna stagionalit\`a.
 Non era proprio quello che mi aspettavo dato che lo sviluppo di software, in
 particolare il Kernel Linux, \`e una attivit\`a umana, di gruppo, e pertanto con
 caratteri di stagionalit\`a. Inoltre, stiamo esaminando dati ragruppati per anno
-su base mensile. Ci sarebbero quindi i presupposti per riuscire a catturare
-almeno una stagionalit\`a annuale. Il mio sospetto \`e che il forte Trend
-ascendente abbia nascosto la stagionalit\`a (dal 2005 al 2020 il numero di
+su base mensile. \textbf{Ci sarebbero quindi i presupposti per riuscire a
+catturare almeno una stagionalit\`a annuale}. Il mio sospetto \`e che il forte
+Trend ascendente abbia nascosto la stagionalit\`a (dal 2005 al 2020 il numero di
 commits mensili \`e aumentato da poche decine a picchi di circa $10000$). Provo
 a investigare pi\`u a fondo.
 \vspace{-0.4cm}
@@ -188,8 +188,8 @@ ci sia alcuna componente di stagionalit\`a.
 	\vspace{-0.8cm}
 \end{figure}
 \noindent
-Notiamo infatti anche che la variabilit\`a del numero di commit per mese lungo i
-16 anni presi in considerazione \`e elevata.
+Notiamo anche che la variabilit\`a del numero di commit per mese, durante i
+16 anni presi in considerazione, \`e elevata.
 \begin{figure}[H]
 	\vspace{-0.3cm}
 	\includegraphics[scale=0.6]{imgs/variance.pdf}
@@ -221,59 +221,79 @@ ampio della componente stagionale.}
 Abbiamo sbagliato tipo di decomposizione? Direi di no: se osserviamo infatti il
 grafico della decomposizione, notiamo  inizialmente un Trend pi\`u piccolo, poi
 cresce, ma a questo non corrisponde una analoga variabilit\`a dei residui.
-\textbf{La mia conclusione \`e che la componente di stagionalit\`a \`e
-decisamente trascurabile.}
+\textbf{La mia conclusione \`e che la componente di stagionalit\`a o \`e
+decisamente trascurabile oppure \`e non uniforme.}
 
 \subsection{Analisi dei residui}
 L'analisi dei residui ci fornisce una ulteriore conferma di quanto osservato
 sino ad ora: la decomposizione additiva \`e quella pi\`u appropiata, certamente
 i residui additivi mostrano minore struttura, \textbf{quindi la componente
-stagionale non era stata nascosta da una decomposizione errata, non \`e presente
-o comunque decisamente trascurabile}.
+stagionale non era stata nascosta da una decomposizione errata, pertanto o non
+\`e presente o comunque decisamente trascurabile, oppure non ha un andamento
+uniforme}.
 \begin{figure}[H]
 	\vspace{-0.3cm}
 	\hspace{-2.7cm}
 	\includegraphics[scale=0.55]{imgs/additive_residuals.pdf}
 \end{figure}
 \begin{figure}[H]
-	\vspace{-0.3cm}
+	\vspace{-0.5cm}
 	\hspace{-2.7cm}
 	\includegraphics[scale=0.55]{imgs/multiplicative_residuals.pdf}
 \end{figure}
 
 \subsection{Decomposizione con stagionalit\`a non uniforme}
 Guardando il grafico dell'andamento centrato a media nulla dei commits, mi viene
-da pensare che ci sia una componente stagionale che per varia da anno ad anno.
-Ho quindi pensato di tentare una decomposizione con stagionalit\`a non uniforme
-per vedere se si riesca ad estrarre quella componente di periodicit\`a che il
-fenomeno ci suggerisce.
+da pensare che ci sia una componente stagionale che per\`o varia da anno ad
+anno. Ho quindi pensato di tentare una decomposizione con stagionalit\`a non
+uniforme per vedere se si riesca ad estrarre quella componente di periodicit\`a
+che il fenomeno ci suggerisce.
 \clearpage
 \begin{figure}[H]
 \begin{center}
 	\vspace{-1.5cm}
 	\includegraphics[scale=0.5]{imgs/heat_colors.pdf}
+	\vspace{-0.5cm}
 \end{center}
 \end{figure}
 \noindent
 Con una scelta della dimensione della \texttt{seasonal window} pari a 3 si
-ottiene la componente stagionale che ha una variabilit\`a degna di nota a
+ottiene una componente stagionale che ha una variabilit\`a significativa a
 confronto con il Trend, e soprattutto maggiore di quella del rumore.
 Questo ci mostra quindi che il fenomeno che ci troviamo ad analizzare ha
-effettivamente una componente di stagionalit\`a che evolve in maniera molto
-rapida. I metodi di analisi precedenti utilizzati prendevano in considerazione
-una finestra troppo ampia e l'analisi veniva quindi falsata dai pattern di
-stagionalit\`a passati che non erano pi\`u rilevanti.
+effettivamente \textbf{una componente di stagionalit\`a che per\`o evolve in
+maniera molto rapida.} I metodi di analisi precedentemente utilizzati prendevano
+in considerazione una finestra troppo ampia e l'analisi veniva quindi falsata
+dai pattern di stagionalit\`a passati che non erano pi\`u rilevanti.
 \begin{figure}[H]
-	\vspace{-0.5cm}
+	\vspace{-0.4cm}
 	\hspace{-1.5cm}
 	\includegraphics[scale=0.7]{imgs/stl.pdf}
 \end{figure}
-\clearpage
 \section{Previsione}
 \subsection{Previsione 1}	% attenzione all'indice in caso di eliminazione
 \subsection{Previsione 2}	% attenzione all'indice in caso di eliminazione
-
+Sono soddisfatto dei modelli di previsione ottenuti. Dobbiamo infatti fare
+attenzione al fatto che gli errori maggiori commessi in fase di autovalutazione
+riguardano le stime dei mesi di Ottobre, Novembre e Dicembre 2020. In effetti,
+\`e possibile che molti commits relativi a questi mesi non siano ancora stati
+accettati nella mainline del Kernel Linux (la repository \textbf{torvalds/linux}
+dalla quale abbiamo estratto i dati di partenza). Questo perch\`e, per
+assicurarsi che niente possa rompere il Kernel Linux, il processo di
+approvazione di un commit \`e lungo e quest'ultimo deve essere approvato da
+pi\`u di uno degli sviluppatori facenti parte della TOP 10.
 
 \section{Conclusione}
-
+Per quanto riguarda i metodi di previsione esposti.\\
+\\
+Al termine di questa analisi inoltre, una delle considerazioni pi\`u importanti
+che possiamo fare \`e che sicuramente lo sviluppo del codice sorgente del
+Kernel Linux \`e una attivit\`a umana e di gruppo; tuttavia, si distingue dalle
+altre in quanto gli individui che vi partecipano sono volontari; di conseguenza
+il numero di sviluppatori, e quindi anche quello dei commits, \`e affetto da una
+variabilit\`a significante ed \`e anche difficile da prevedere. Non solo, questi
+commits provengono anche da grosse multinazionali (Oracle, RedHat, Google, IBM,
+Facebook, Amazon), e da altri enti come NASA, CERN, Dipartimento della Difesa
+degli Stati Uniti, ecc\dots. Il numero di commits pu\`o quindi variare anche a
+seconda delle necessit\`a di sviluppo software interne a questi enti.
 \end{document}
