@@ -271,29 +271,115 @@ dai pattern di stagionalit\`a passati che non erano pi\`u rilevanti.
 	\includegraphics[scale=0.7]{imgs/stl.pdf}
 \end{figure}
 \section{Previsione}
-\subsection{Previsione 1}	% attenzione all'indice in caso di eliminazione
-\subsection{Previsione 2}	% attenzione all'indice in caso di eliminazione
-Sono soddisfatto dei modelli di previsione ottenuti. Dobbiamo infatti fare
-attenzione al fatto che gli errori maggiori commessi in fase di autovalutazione
-riguardano le stime dei mesi di Ottobre, Novembre e Dicembre 2020. In effetti,
-\`e possibile che molti commits relativi a questi mesi non siano ancora stati
-accettati nella mainline del Kernel Linux (la repository \textbf{torvalds/linux}
-dalla quale abbiamo estratto i dati di partenza). Questo perch\`e, per
-assicurarsi che niente possa rompere il Kernel Linux, il processo di
-approvazione di un commit \`e lungo e quest'ultimo deve essere approvato da
+Al termine di questa prima fase dianalisi, una delle considerazioni pi\`u
+importanti che dobbiamo tenere a mente \`e che sicuramente lo sviluppo del
+codice sorgente del Kernel Linux \`e una attivit\`a umana e di gruppo; tuttavia,
+si distingue dalle altre in quanto gli individui che vi partecipano sono
+volontari; di conseguenza il numero di sviluppatori, e quindi anche quello dei
+commits, \`e affetto da una variabilit\`a significativa ed \`e anche difficile
+da prevedere. Non solo, questi commits provengono anche da grosse multinazionali
+(Oracle, RedHat, Google, IBM, Facebook, Amazon), e da altri enti come NASA,
+CERN, Dipartimento della Difesa degli Stati Uniti, ecc\dots. Il numero di
+commits pu\`o quindi variare anche a seconda delle necessit\`a di sviluppo
+software interne a questi enti. \textbf{In fase di previsione quindi dobbiamo
+tenere a mente che queste variazioni non sono propriamente dovute ad un fenomeno
+strutturale, ma piuttosto ad un fenomeno che contiene ampie componenti di
+aleatoriet\`a}.
+
+\subsection{Holt-Winters}
+Ho valutato per mezzo di autovalutazione un modello a smorzamento esponenziale,
+uno a smorzamento esponenziale con Trend e uno a smorzamento esponenziale con
+Trend e Stagionalit\`a.
+\begin{figure}[H]
+	\vspace{-0.4cm}
+	\hspace{-1.5cm}
+	\includegraphics[scale=0.66]{imgs/HW_predict.pdf}
+\end{figure}
+\vspace{-0.6cm}
+\noindent
+In quanto a previsioni, non possiamo certamente dire che ci sia un modello che
+faccia nettamente meglio degli altri. Per quanto riguarda i valori di errore
+invece, il modello a smorzamento esponenziale con Trend e Stagionalit\`a
+sembrerebbe fare leggermente meglio. Dobbiamo tenere in considerazione per\`o
+che gli errori aumentano per quanto riguarda gli ultimi mesi del 2020. In
+effetti, \`e possibile che molti commits relativi a questi mesi non siano ancora
+stati accettati nella mainline del Kernel Linux (la repository
+\textbf{torvalds/linux} dalla quale abbiamo estratto i dati di partenza). Questo
+perch\`e, per assicurarsi che niente possa rompere il Kernel Linux, il processo
+di approvazione di un commit \`e lungo: ogni modifica deve essere approvata da
 pi\`u di uno degli sviluppatori facenti parte della TOP 10.
+\begin{figure}[H]
+	\vspace{-1.5cm}
+	\hspace{-1.5cm}
+	\includegraphics[scale=0.66]{imgs/HW_residuals.pdf}
+	\vspace{-1.2cm}
+\end{figure}
+\noindent
+Ci sono stati degli errori di ottimizzazione dei parametri per quanto riguarda
+il modello Holt-Winters che per\`o abbiamo ignorato.\\
+Data la nostra conoscenza del fenomeno, e i risultati ottenuti in fase di
+analisi delle componenti di Trend e Stagionalit\`a, il modello che preferisco
+\`e quello a smorzamento esponenziale con Trend:
+\begin{figure}[H]
+	\vspace{-0.4cm}
+	\hspace{-1.5cm}
+	\includegraphics[scale=0.65]{imgs/HW_trend.pdf}
+	\vspace{-1.0cm}
+\end{figure}
+\noindent
+Siamo soddisfatti anche della normalit\`a dei residui di tale modello:
+\begin{lstlisting}[language=bash,basicstyle=\scriptsize,tabsize=2,frame = single]
+> shapiro.test(data_ts.set.r)
+
+	Shapiro-Wilk normality test
+
+data:  data_ts.set.r
+W = 0.98895, p-value = 0.1504
+\end{lstlisting}
+\begin{figure}[H]
+	\vspace{-1.5cm}
+	\hspace{-2.7cm}
+	\includegraphics[scale=0.57]{imgs/HW_residuals_normality.pdf}
+\end{figure}
+
+\subsection{Autoregressione con il metodo dei minimi quadrati}
+La nostra conoscienza del fenomeno, i risultati raggiunti in termini della
+stagionalit\`a, la funzione di autocorrelazione e di autocorrelazione parziale
+ci suggeriscono che ci siano effettivamente i presupposti per procedere con
+l'analisi di un modello autoregressivo.
+\begin{figure}[H]
+	\vspace{-0.3cm}
+	\hspace{-1.5cm}
+	\includegraphics[scale=0.57]{imgs/acf_pacf.pdf}
+	\vspace{-1.0cm}
+\end{figure}
+\noindent
+Questo modello, a differenza di quello di Holt-Winters che si basava
+principalmente sul Trend, dovrebbe riuscire a catturare questo fenomeno
+tempo-variante che porta ad una elevata variabilit\`a del numero di commits. Ho
+scelto quindi di valutare un modello di Autoregressione con il metodo dei minimi
+quadrati per riuscire a catturare la parte non stazionaria della serie temporale
+in analisi. \textbf{In fase di previsione e autovalutazione il modello non \`e
+eccezionalmente migliora, tuttavia, dal punto di vista dei residui, \`e
+certamente preferibile.}
+\begin{figure}[H]
+	\vspace{-1.7cm}
+	\hspace{-3.0cm}
+	\includegraphics[scale=0.56]{imgs/AR_plot_test.pdf}
+	\vspace{-0.9cm}
+\end{figure}
+\begin{figure}[H]
+	\hspace{-2.5cm}
+	\includegraphics[scale=0.51]{imgs/AR_residuals.pdf}
+	\vspace{-1.0cm}
+\end{figure}
 
 \section{Conclusione}
-Per quanto riguarda i metodi di previsione esposti.\\
+Certamente ci sarebbe da approfondire maggiormente i modelli di tipo
+autoregressivo che, come ho sottolineato precedentemente, potrebbero darci una
+mano a catturare quella parte del fenomeno che ha un comportamento aleatorio e
+che porta ad avere una stagionalit\`a che evolve in maniera molto rapida.\\
 \\
-Al termine di questa analisi inoltre, una delle considerazioni pi\`u importanti
-che possiamo fare \`e che sicuramente lo sviluppo del codice sorgente del
-Kernel Linux \`e una attivit\`a umana e di gruppo; tuttavia, si distingue dalle
-altre in quanto gli individui che vi partecipano sono volontari; di conseguenza
-il numero di sviluppatori, e quindi anche quello dei commits, \`e affetto da una
-variabilit\`a significante ed \`e anche difficile da prevedere. Non solo, questi
-commits provengono anche da grosse multinazionali (Oracle, RedHat, Google, IBM,
-Facebook, Amazon), e da altri enti come NASA, CERN, Dipartimento della Difesa
-degli Stati Uniti, ecc\dots. Il numero di commits pu\`o quindi variare anche a
-seconda delle necessit\`a di sviluppo software interne a questi enti.
+Ho tratto le conclusioni al termine di ogni fase di analisi. Evito pertanto di
+allungare ulteriormente la relazione riassumendole nuovamente.
 \end{document}
