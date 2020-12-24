@@ -10,3 +10,4 @@ Data Mining at University of Pisa.
 ![Project 2 Screenshot](project_2/imgs/project_2.png)
 
 ## Project 3: Linux Kernel repository commits Time Series Analysis
+![Project 3 Screenshot](project_3/imgs/project_3.png)
